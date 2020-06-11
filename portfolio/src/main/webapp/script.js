@@ -29,3 +29,20 @@ function addRandomGreeting() {
   const greetingContainer = document.getElementById('greeting-container');
   greetingContainer.innerText = greeting;
 }
+
+function addRandomFunFact() {
+  const funfacts =
+      ['My favorite flower is Sunflower',
+      'My favorite movie is \"The Devil Wears Prada\"',
+      'My favorite place in NYC is MET!', 
+      'The first broadway show I\'ve ever watched is \"Chicago\"',
+      'I\'m a Kpop fan',
+      'I don\'t have any pets. I\'ve only kept goldfish before'];
+
+  // Pick a random greeting.
+  const funfact = funfacts[Math.floor(Math.random() * funfacts.length)];
+
+  // Add it to the page.
+  const funfactContainer = document.getElementById('funfact-container');
+  funfactContainer.innerText = funfact;
+}
