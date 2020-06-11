@@ -5,7 +5,12 @@
 }
 
 #greeting-container {
-  margin-top: 20px;
+  margin-top: 10px;
+}
+
+#funfact-container {
+  margin-top:10px;
+  margin-bottom: 20px;
 }
 
 .image-thumbnails {
