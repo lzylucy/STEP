@@ -13,6 +13,14 @@
   margin-bottom: 20px;
 }
 
+br{
+    line-height: 2px;
+}
+
+.description {
+    font: italic 10pt 'Courier Prime', monospace; 
+}
+
 .image-thumbnails {
   display: flex;
   flex-wrap: wrap;
