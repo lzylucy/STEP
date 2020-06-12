@@ -14,7 +14,12 @@
 }
 
 br{
-    line-height: 2px;
+  line-height: 2px;
+}
+
+.image-link img{
+  width: 350px;
+  height: 400px;
 }
 
 .description {
