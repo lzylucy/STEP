@@ -30,6 +30,9 @@ function addRandomGreeting() {
   greetingContainer.innerText = greeting;
 }
 
+/**
+ * Adds a random fun fact to the page.
+ */
 function addRandomFunFact() {
   const funfacts =
       ['My favorite flower is Sunflower',
@@ -39,7 +42,7 @@ function addRandomFunFact() {
       'I\'m a Kpop fan',
       'I don\'t have any pets. I\'ve only kept goldfish before'];
 
-  // Pick a random greeting.
+  // Pick a random fun fact.
   const funfact = funfacts[Math.floor(Math.random() * funfacts.length)];
 
   // Add it to the page.
