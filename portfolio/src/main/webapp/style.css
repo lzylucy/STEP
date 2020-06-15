@@ -1,9 +1,43 @@
 #content {
   margin-left: auto;
   margin-right: auto;
-  width: 650px;
+  width: 700px;
 }
 
 #greeting-container {
-  margin-top: 20px;
+  margin-top: 10px;
+}
+
+#funfact-container {
+  margin-top:10px;
+  margin-bottom: 20px;
+}
+
+br {
+  line-height: 2px;
+}
+
+.image-link img {
+  width: 350px;
+  height: 400px;
+}
+
+.description {
+    font: italic 10pt 'Courier Prime', monospace; 
+}
+
+.image-thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.image-thumbnails img {
+  margin: 10px;
+  max-height: 200px;
+  max-width: 200px;
+}
+
+.image-thumbnails img:hover {
+  border: solid rgb(17, 206, 0);
 }

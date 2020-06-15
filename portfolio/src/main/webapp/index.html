@@ -8,11 +8,77 @@
   </head>
   <body>
     <div id="content">
-      <h1>My Portfolio</h1>
-      <p>This is my portfolio.</p>
+      <h1>Welcome to Sunflower's Homepage</h1>
+
+      <p>My name is Zeyi Liu, a rising junior at Columbia University 
+         studying Computer Science and Applied Math. I'm very excited 
+         to join Google this summer!
+
+      <p>My interest in CS lies in ML and its applications.
+         I worked as a research assistant in my sophomore year 
+         when I implemented ML based attacksto evade PDF malware classifiers.
+
+      <h3>Experiences</h3>
+      <ul>	
+        <li>Research Assistant 
+            @ Columbia University (Sep 2019 - May 2020):<br>
+          <div class="description">
+              Implement MalGAN to attack PDF malware classifiers. 
+              Github Link here: 
+              <a href="https://github.com/xiaoluLucy814/Malware-GAN-attack">Malware-GAN-attack</a>
+          </div>
+        <br>
+
+        <li>Software Engineer 
+            @ Lamont-Doherty Earth Laboratory (Nov 2019 - May 2020)<br>
+          <div class="description">
+              Working on <b>NYC Air Pollution Project</b>
+          </div>
+        <br>
+
+        <li>Software Engineer Intern 
+            @ China Mobile (June 2019 - July 2019)<br>
+          <div class="description">
+              Backend Development in the Testing Center
+          </div>
+      </ul>
+
+      <h3>Projects</h3>
+      <ul>
+        <li><b>Dev Fest 2018:</b><br>
+        <div class="description">
+            A web app that works with Yelp API to recommend restaurants 
+            based on users' preferences. Front end written with Javascript 
+            and back end with Python. Github Link here: 
+            <a href="https://github.com/xiaoluLucy814/DevFest2018">DevFest2018</a>
+        </div>
+        <br>
+
+        <li><b>THE Hack 2019:</b><br>
+        <div class="description">
+            A project that scrapes stories for kids from online sources
+            using Scrapy and recommends stories based on preferences and 
+            feedback set by parents.
+        </div>
+      </ul>
+
+      <div class="image-link">
+        <a href="photo.html">
+            <img src="images/sunflower.png" alt="sunflower"></a>
+      </div>
+
       <p>Click here to get a random message:</p>
       <button onclick="addRandomGreeting()">Hello</button>
       <div id="greeting-container"></div>
+      <br>
+
+      <p>Click here to get a random fun fact about me:</p>
+      <button onclick="addRandomFunFact()">Fun Fact</button>
+      <div id="funfact-container"></div>
+
+      <a href="https://github.com/xiaoluLucy814?tab=repositories">GitHub profile</a>
+      <a href="https://linkedin.com/in/zeyi-liu-38789b16b/">LinkedIn profile</a>
+
     </div>
   </body>
 </html>

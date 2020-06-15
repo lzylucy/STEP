@@ -17,7 +17,10 @@
  */
 function addRandomGreeting() {
   const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
+      ['One who wants to wear the crown, bears the crown.',
+      'In lumine Tuo videbimus lumen',
+      'YOLO!', 
+      'Wear your failure as a badge of honor'];
 
   // Pick a random greeting.
   const greeting = greetings[Math.floor(Math.random() * greetings.length)];
@@ -25,4 +28,24 @@ function addRandomGreeting() {
   // Add it to the page.
   const greetingContainer = document.getElementById('greeting-container');
   greetingContainer.innerText = greeting;
+}
+
+/**
+ * Adds a random fun fact to the page.
+ */
+function addRandomFunFact() {
+  const funfacts =
+      ['My favorite flower is Sunflower',
+      'My favorite movie is \"The Devil Wears Prada\"',
+      'My favorite place in NYC is MET!', 
+      'The first broadway show I\'ve ever watched is \"Chicago\"',
+      'I\'m a Kpop fan',
+      'I don\'t have any pets. I\'ve only kept goldfish before'];
+
+  // Pick a random fun fact.
+  const funfact = funfacts[Math.floor(Math.random() * funfacts.length)];
+
+  // Add it to the page.
+  const funfactContainer = document.getElementById('funfact-container');
+  funfactContainer.innerText = funfact;
 }
