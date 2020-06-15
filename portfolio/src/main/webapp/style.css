@@ -4,6 +4,11 @@
   width: 700px;
 }
 
+#msg-container {
+  color: green;
+  font-size: 40px;
+}
+
 #greeting-container {
   margin-top: 10px;
 }
