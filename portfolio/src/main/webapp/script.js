@@ -49,3 +49,12 @@ function addRandomFunFact() {
   const funfactContainer = document.getElementById('funfact-container');
   funfactContainer.innerText = funfact;
 }
+
+/**
+ * Fetches greeting message from DataServlet and adds it to the page
+ */
+function getGreetingUsingArrowFunctions() {
+    fetch('/data').then(response => response.text()).then((greeting) => {
+        document.getElementById('msg-container').innerText = greeting
+    });
+}
