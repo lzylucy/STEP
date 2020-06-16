@@ -51,7 +51,7 @@ function addRandomFunFact() {
 }
 
 /**
- * Fetch greeting message from DataServlet and add it to the page
+ * Fetches greeting message from DataServlet and adds it to the page
  */
 function getGreetingUsingArrowFunctions() {
     fetch('/data').then(response => response.text()).then((greeting) => {
