@@ -54,30 +54,15 @@ function addRandomFunFact() {
  * Fetches messages from DataServlet and adds them to the page
  */
 function getGreetingUsingArrowFunctions() {
-    fetch('/data').then(response => response.json()).then((stats) => {
-    
+    fetch('/data').then(response => response.json()).then((stats) => {   
       console.log(stats)
-
       const statsListElement = document.getElementById('msg-container');
       statsListElement.innerHTML = '';
 
-      // Deal with Gson created JSON string
-      statsListElement.appendChild(
-          createListElement('Message 1: ' + stats[0]));
-      statsListElement.appendChild(
-          createListElement('Message 2: ' + stats[1]));
-      statsListElement.appendChild(
-          createListElement('Message 3: ' + stats[2]));
-      
-      // Deal with manually created JSON string
-      /*
-      statsListElement.appendChild(
-          createListElement('Message 1: ' + stats.message1));
-      statsListElement.appendChild(
-          createListElement('Message 2: ' + stats.message2));
-      statsListElement.appendChild(
-          createListElement('Message 3: ' + stats.message3));
-      */
+      for (let i=0; i<stats.length; i++) {
+        statsListElement.appendChild(
+            createListElement(`Message ${i}: ` + stats[i]));
+      }
   });
 }
 
