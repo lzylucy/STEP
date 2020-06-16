@@ -25,10 +25,10 @@ import java.util.ArrayList;
 /** Servlet that returns comments. */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+  public static final Gson GSON = new Gson();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     // Create an ArrayList containing hard-coded messages
     ArrayList<String> messages = new ArrayList<>();
     messages.add(new String("How are you?"));
@@ -44,29 +44,9 @@ public class DataServlet extends HttpServlet {
   }
 
   /**
-   * Converts an ArrayList instance into a JSON string 
-   * using manual String concatentation.
-   */
-  private String convertToJson(ArrayList<String> messages) {
-    String json = "{";
-    json += "\"message1\": ";
-    json += "\"" + messages.get(0) + "\"";
-    json += ", ";
-    json += "\"message2\": ";
-    json += "\"" + messages.get(1) + "\"";
-    json += ", ";
-    json += "\"message3\": ";
-    json += "\"" + messages.get(2) + "\"";
-    json += "}";
-    return json;
-  }
-
-  /**
    * Converts an ArrayList instance into a JSON string using the Gson library.
    */
   private String convertToJsonUsingGson(ArrayList<String> messages) {
-    Gson gson = new Gson();
-    String json = gson.toJson(messages);
-    return json;
+    return GSON.toJson(messages);
   }
 }
