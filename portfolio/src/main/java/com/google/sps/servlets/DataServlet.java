@@ -19,14 +19,54 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.gson.Gson;
+import java.util.ArrayList;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** Servlet that returns comments. */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println("Hello Zeyi!");
+
+    // Create an ArrayList containing hard-coded messages
+    ArrayList<String> messages = new ArrayList<>();
+    messages.add(new String("How are you?"));
+    messages.add(new String("Welcome to my site!"));
+    messages.add(new String("Have a good day!"));
+
+    // Convert the ArrayList to JSON
+    String json = convertToJsonUsingGson(messages);
+
+    // Send the JSON as the response
+    response.setContentType("application/json;");
+    response.getWriter().println(json);
+  }
+
+  /**
+   * Converts an ArrayList instance into a JSON string 
+   * using manual String concatentation.
+   */
+  private String convertToJson(ArrayList<String> messages) {
+    String json = "{";
+    json += "\"message1\": ";
+    json += "\"" + messages.get(0) + "\"";
+    json += ", ";
+    json += "\"message2\": ";
+    json += "\"" + messages.get(1) + "\"";
+    json += ", ";
+    json += "\"message3\": ";
+    json += "\"" + messages.get(2) + "\"";
+    json += "}";
+    return json;
+  }
+
+  /**
+   * Converts an ArrayList instance into a JSON string using the Gson library.
+   */
+  private String convertToJsonUsingGson(ArrayList<String> messages) {
+    Gson gson = new Gson();
+    String json = gson.toJson(messages);
+    return json;
   }
 }
