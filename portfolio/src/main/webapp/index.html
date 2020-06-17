@@ -6,9 +6,8 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body onload="getGreetingUsingArrowFunctions()">
+  <body onload="getCommentsUsingArrowFunctions()">
     <div id="content">
-      <div id="msg-container"></div>
       <h1>Welcome to Sunflower's Homepage</h1>
 
       <p>My name is Zeyi Liu, a rising junior at Columbia University 
@@ -71,11 +70,36 @@
       <p>Click here to get a random message:</p>
       <button onclick="addRandomGreeting()">Hello</button>
       <div id="greeting-container"></div>
-      <br>
 
       <p>Click here to get a random fun fact about me:</p>
       <button onclick="addRandomFunFact()">Fun Fact</button>
       <div id="funfact-container"></div>
+
+      <div id="comment-container">
+        <form action="/data" method="POST">
+
+          <label for="user-name">Your Name:</label>
+          <input type="text" name="user-name"><br><br>
+
+          <label for="jobs">Your Profession:</label>
+          <select name="jobs" id="jobs"> 
+            <option value="Student">Student</option>
+            <option value="SWE">Software Engineer</option>
+            <option value="Researcher">Researcher</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <p>Feel free to leave a comment here:</p>
+          <textarea id="visitor-comment" 
+                    name="visitor-comment">Enter your comment here</textarea>
+          <br><br>
+
+          <input type="submit" />
+        </form>
+      </div>
+
+      <p> Comments </p>
+      <div id="msg-container"></div>
 
       <a href="https://github.com/xiaoluLucy814?tab=repositories">GitHub profile</a>
       <a href="https://linkedin.com/in/zeyi-liu-38789b16b/">LinkedIn profile</a>
