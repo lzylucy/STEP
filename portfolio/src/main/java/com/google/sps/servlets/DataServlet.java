@@ -25,28 +25,51 @@ import java.util.ArrayList;
 /** Servlet that returns comments. */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  public static final Gson GSON = new Gson();
+  private static final Gson GSON = new Gson();
+  private ArrayList<ArrayList<String>> messages = new ArrayList<>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Create an ArrayList containing hard-coded messages
-    ArrayList<String> messages = new ArrayList<>();
-    messages.add(new String("How are you?"));
-    messages.add(new String("Welcome to my site!"));
-    messages.add(new String("Have a good day!"));
-
-    // Convert the ArrayList to JSON
-    String json = convertToJsonUsingGson(messages);
-
-    // Send the JSON as the response
     response.setContentType("application/json;");
-    response.getWriter().println(json);
+    response.getWriter().println(convertToJsonUsingGson(messages));
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Retrieve information from the form
+    String name = getParameter(request, "user-name", "Anonymous");
+    String job = getParameter(request, "jobs", "Other");
+    String comment = getParameter(request, "visitor-comment", "");
+
+    // Store the information if comment is non-empty
+    if (comment.length() > 0) {
+       ArrayList<String> info = new ArrayList<>();
+       info.add(name);
+       info.add(job);
+       info.add(comment);
+       messages.add(info);
+    }
+
+    // Redirect back to the HTML page.
+    response.sendRedirect("/index.html");
   }
 
   /**
    * Converts an ArrayList instance into a JSON string using the Gson library.
    */
-  private String convertToJsonUsingGson(ArrayList<String> messages) {
+  private String convertToJsonUsingGson(ArrayList<ArrayList<String>> messages) {
     return GSON.toJson(messages);
+  }
+
+  /**
+   * @return the request parameter, or the default value if the parameter
+   *         was not specified by the client
+   */
+  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+    String value = request.getParameter(name);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value;
   }
 }
