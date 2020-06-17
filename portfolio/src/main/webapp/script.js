@@ -51,9 +51,9 @@ function addRandomFunFact() {
 }
 
 /**
- * Fetches messages from DataServlet and adds them to the page
+ * Fetches comments from DataServlet and adds them to the page
  */
-function getGreetingUsingArrowFunctions() {
+function getCommentsUsingArrowFunctions() {
     fetch('/data').then(response => response.json()).then((stats) => {   
       console.log(stats)
       const statsListElement = document.getElementById('msg-container');
@@ -61,14 +61,22 @@ function getGreetingUsingArrowFunctions() {
 
       for (let i=0; i<stats.length; i++) {
         statsListElement.appendChild(
-            createListElement(`Message ${i}: ` + stats[i]));
+            createListElement(stats[i][0] + " -- " + stats[i][1], 
+                              stats[i][2]));
       }
   });
 }
 
-/** Creates an <li> element containing text. */
-function createListElement(text) {
+/** 
+ * Creates a <li> element containing commenter identity 
+ * and a child <div> element containing the comment.
+ */
+function createListElement(identity, comment) {
   const liElement = document.createElement('li');
-  liElement.innerText = text;
+  liElement.innerText = identity;
+  const divElement = document.createElement('div')
+  divElement.className = "comment"
+  divElement.innerText = comment
+  liElement.appendChild(divElement);
   return liElement;
 }
