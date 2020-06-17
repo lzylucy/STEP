@@ -51,10 +51,24 @@ function addRandomFunFact() {
 }
 
 /**
- * Fetches greeting message from DataServlet and adds it to the page
+ * Fetches messages from DataServlet and adds them to the page
  */
 function getGreetingUsingArrowFunctions() {
-    fetch('/data').then(response => response.text()).then((greeting) => {
-        document.getElementById('msg-container').innerText = greeting
-    });
+    fetch('/data').then(response => response.json()).then((stats) => {   
+      console.log(stats)
+      const statsListElement = document.getElementById('msg-container');
+      statsListElement.innerHTML = '';
+
+      for (let i=0; i<stats.length; i++) {
+        statsListElement.appendChild(
+            createListElement(`Message ${i}: ` + stats[i]));
+      }
+  });
+}
+
+/** Creates an <li> element containing text. */
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
 }
