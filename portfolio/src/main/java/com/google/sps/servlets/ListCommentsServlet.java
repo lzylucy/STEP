@@ -32,6 +32,7 @@ import java.util.ArrayList;
 /** Servlet that returns comments. */
 @WebServlet("/list-data")
 public class ListCommentsServlet extends HttpServlet {
+    
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Define a query rule that prioritizes latest messages
