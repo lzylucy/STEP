@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body onload="getCommentsUsingArrowFunctions()">
+  <body onload="loadComments()">
     <div id="content">
       <h1>Welcome to Sunflower's Homepage</h1>
 
@@ -74,6 +74,13 @@
       <p>Click here to get a random fun fact about me:</p>
       <button onclick="addRandomFunFact()">Fun Fact</button>
       <div id="funfact-container"></div>
+
+      <form action="/comment-limit">    
+        <label for="limit">Set comment limit here:</label>
+        <input type="number" id="limit" name="limit" min="1" max="6"
+               onchange="loadComments()">
+        <input type="submit">
+      </form>
 
       <div id="comment-container">
         <form action="/new-data" method="POST">
