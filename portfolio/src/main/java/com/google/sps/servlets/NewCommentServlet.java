@@ -14,6 +14,9 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,40 +26,30 @@ import com.google.gson.Gson;
 import com.google.sps.data.Message;
 import java.util.ArrayList;
 
-/** Servlet that returns comments. */
-@WebServlet("/data")
-public class DataServlet extends HttpServlet {
-  private static final Gson GSON = new Gson();
-  private ArrayList<Message> messages = new ArrayList<>();
-
+/** Servlet that stores new comments. */
+@WebServlet("/new-data")
+public class NewCommentServlet extends HttpServlet {
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("application/json;");
-    response.getWriter().println(convertToJsonUsingGson(messages));
-  }
-
-  @Override
-  public synchronized void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Retrieve information from the form
     String name = getParameterWithDefault(request, "user-name", "Anonymous");
     String job = getParameterWithDefault(request, "jobs", "Other");
     String comment = getParameterWithDefault(request, "visitor-comment", "");
+    long timestamp = System.currentTimeMillis();
 
     // Store the information if comment is non-empty
     if (!comment.isEmpty()) {
-        messages.add(new Message(name, job, comment));
+      Entity messageEntity = new Entity("Message");
+      messageEntity.setProperty("name", name);
+      messageEntity.setProperty("job", job);
+      messageEntity.setProperty("comment", comment);
+      messageEntity.setProperty("timestamp", timestamp);
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      datastore.put(messageEntity);
     }
 
     // Redirect back to the HTML page.
     response.sendRedirect("/index.html");
-  }
-
-  /**
-   * Converts an ArrayList instance into a JSON string using the Gson library.
-   */
-  private <T> String convertToJsonUsingGson(ArrayList<T> messages) {
-    return GSON.toJson(messages);
   }
 
   /**
