@@ -54,6 +54,7 @@ function addRandomFunFact() {
  * Fetches comments from DataServlet and adds them to the page
  */
 function loadComments() {
+  //TODO: replace the hard-code value with user defined value
   fetch('/list-data?comment-limit=3').then(response => response.json()).then((stats) => {   
     console.log(stats)
     const statsListElement = document.getElementById('msg-container');
@@ -88,7 +89,7 @@ function createCommentElement(message) {
   return commentElement;
 }
 
-/** Tells the server to delete a comment and remove it from DOM. */
+/** Tells the server to delete a comment. */
 function deleteComment(message) {
   const params = new URLSearchParams();
   params.append('id', message.id);
