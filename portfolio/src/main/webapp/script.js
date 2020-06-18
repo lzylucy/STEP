@@ -54,7 +54,7 @@ function addRandomFunFact() {
  * Fetches comments from DataServlet and adds them to the page
  */
 function getCommentsUsingArrowFunctions() {
-    fetch('/data').then(response => response.json()).then((stats) => {   
+    fetch('/list-data').then(response => response.json()).then((stats) => {   
       console.log(stats)
       const statsListElement = document.getElementById('msg-container');
       statsListElement.innerHTML = '';
