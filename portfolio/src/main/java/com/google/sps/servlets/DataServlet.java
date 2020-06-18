@@ -20,13 +20,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
+import com.google.sps.data.Message;
 import java.util.ArrayList;
 
 /** Servlet that returns comments. */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   private static final Gson GSON = new Gson();
-  private ArrayList<ArrayList<String>> messages = new ArrayList<>();
+  private ArrayList<Message> messages = new ArrayList<>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -35,19 +36,16 @@ public class DataServlet extends HttpServlet {
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public synchronized void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
     // Retrieve information from the form
-    String name = getParameter(request, "user-name", "Anonymous");
-    String job = getParameter(request, "jobs", "Other");
-    String comment = getParameter(request, "visitor-comment", "");
+    String name = getParameterWithDefault(request, "user-name", "Anonymous");
+    String job = getParameterWithDefault(request, "jobs", "Other");
+    String comment = getParameterWithDefault(request, "visitor-comment", "");
 
     // Store the information if comment is non-empty
-    if (comment.length() > 0) {
-       ArrayList<String> info = new ArrayList<>();
-       info.add(name);
-       info.add(job);
-       info.add(comment);
-       messages.add(info);
+    if (!comment.isEmpty()) {
+        messages.add(new Message(name, job, comment));
     }
 
     // Redirect back to the HTML page.
@@ -57,7 +55,7 @@ public class DataServlet extends HttpServlet {
   /**
    * Converts an ArrayList instance into a JSON string using the Gson library.
    */
-  private String convertToJsonUsingGson(ArrayList<ArrayList<String>> messages) {
+  private <T> String convertToJsonUsingGson(ArrayList<T> messages) {
     return GSON.toJson(messages);
   }
 
@@ -65,7 +63,7 @@ public class DataServlet extends HttpServlet {
    * @return the request parameter, or the default value if the parameter
    *         was not specified by the client
    */
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+  private String getParameterWithDefault(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     if (value == null) {
       return defaultValue;
