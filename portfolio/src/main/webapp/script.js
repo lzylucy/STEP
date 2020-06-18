@@ -53,32 +53,45 @@ function addRandomFunFact() {
 /**
  * Fetches comments from DataServlet and adds them to the page
  */
-function getCommentsUsingArrowFunctions() {
-    fetch('/list-data').then(response => response.json()).then((stats) => {   
-      console.log(stats)
-      const statsListElement = document.getElementById('msg-container');
-      statsListElement.innerHTML = '';
+function loadComments() {
+  fetch('/list-data?comment-limit=3').then(response => response.json()).then((stats) => {   
+    console.log(stats)
+    const statsListElement = document.getElementById('msg-container');
+    statsListElement.innerHTML = '';
       
-      if (stats) {
-        for (let i=0; i<stats.length; i++) {
-          statsListElement.appendChild(
-              createListElement(stats[i].name + " -- " + stats[i].job, 
-                                stats[i].comment));
-        }
-      }
-    });
+    if (stats) {
+      stats.forEach((message) => {
+        statsListElement.appendChild(createCommentElement(message));
+      })
+    }
+  });
 }
 
-/** 
- * Creates a <li> element containing commenter identity 
- * and a child <div> element containing the comment.
- */
-function createListElement(identity, comment) {
-  const liElement = document.createElement('li');
-  liElement.innerText = identity;
+/** Creates an element that represents a comment, including its delete button. */
+function createCommentElement(message) {
+  const commentElement = document.createElement('li');
+  commentElement.innerText = message.name + "--" + message.job;
+
   const divElement = document.createElement('div')
   divElement.className = "comment"
-  divElement.innerText = comment
-  liElement.appendChild(divElement);
-  return liElement;
+  divElement.innerText = message.comment
+  commentElement.appendChild(divElement);
+
+  const deleteButtonElement = document.createElement('button');
+  deleteButtonElement.innerText = 'Delete';
+  deleteButtonElement.addEventListener('click', () => {
+    deleteComment(message);
+    commentElement.remove();
+  });
+  commentElement.appendChild(deleteButtonElement);
+
+  return commentElement;
+}
+
+/** Tells the server to delete a comment and remove it from DOM. */
+function deleteComment(message) {
+  const params = new URLSearchParams();
+  params.append('id', message.id);
+  // TODO: what if deleting the data is not successful, how to check
+  fetch('/delete-data', {method: 'POST', body: params});
 }
