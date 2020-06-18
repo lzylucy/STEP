@@ -29,9 +29,10 @@ import java.util.ArrayList;
 /** Servlet that stores new comments. */
 @WebServlet("/new-data")
 public class NewCommentServlet extends HttpServlet {
+    
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Retrieve information from the form
+    // Retrieve information from the form and add timestamp
     String name = getParameterWithDefault(request, "user-name", "Anonymous");
     String job = getParameterWithDefault(request, "jobs", "Other");
     String comment = getParameterWithDefault(request, "visitor-comment", "");
