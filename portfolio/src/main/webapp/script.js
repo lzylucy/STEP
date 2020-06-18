@@ -58,13 +58,15 @@ function getCommentsUsingArrowFunctions() {
       console.log(stats)
       const statsListElement = document.getElementById('msg-container');
       statsListElement.innerHTML = '';
-
-      for (let i=0; i<stats.length; i++) {
-        statsListElement.appendChild(
-            createListElement(stats[i][0] + " -- " + stats[i][1], 
-                              stats[i][2]));
+      
+      if (stats) {
+        for (let i=0; i<stats.length; i++) {
+          statsListElement.appendChild(
+              createListElement(stats[i].name + " -- " + stats[i].job, 
+                                stats[i].comment));
+        }
       }
-  });
+    });
 }
 
 /** 
