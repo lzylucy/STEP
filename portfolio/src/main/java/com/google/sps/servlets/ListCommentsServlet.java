@@ -27,8 +27,25 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
-import com.google.sps.data.Message;
 import java.util.ArrayList;
+
+/** An item containing visitor information and comment. */
+final class Message {
+    
+  public Message(long id, String name, String job, String comment, long timestamp) {
+    this.id = id;
+    this.name = name;
+    this.job = job;
+    this.comment = comment;
+    this.timestamp = timestamp;
+  }
+
+  private final long id;
+  private final String name;
+  private final String job;
+  private final String comment;
+  private final long timestamp;
+}
 
 /** Servlet that returns comments. */
 @WebServlet("/list-data")
