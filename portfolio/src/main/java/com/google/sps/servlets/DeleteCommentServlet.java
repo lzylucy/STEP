@@ -30,17 +30,16 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for deleting comments. */
 @WebServlet("/delete-data")
 public class DeleteCommentServlet extends HttpServlet {
-
+ 
+  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query("Message");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = new Query("Message").setKeysOnly();
     PreparedQuery results = datastore.prepare(query);
 
-    for (Entity entity : results.asIterable()) {
-      long id = entity.getKey().getId();
-      Key messageEntityKey = KeyFactory.createKey("Message", id);
-      datastore.delete(messageEntityKey);
+    for (final Entity entity : results.asIterable()) {
+      datastore.delete(entity.getKey());
     }
   }
 }
