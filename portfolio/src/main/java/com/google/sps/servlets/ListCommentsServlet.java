@@ -32,12 +32,13 @@ import java.util.ArrayList;
 /** Servlet that returns comments. */
 @WebServlet("/list-data")
 public class ListCommentsServlet extends HttpServlet {
-    
+
+  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Define a query rule that prioritizes latest messages
     Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
  
     // Retrieve all history comments from datastore
@@ -60,9 +61,8 @@ public class ListCommentsServlet extends HttpServlet {
   /**
    * Converts an ArrayList instance into a JSON string using the Gson library.
    */
-  private <T> String convertToJsonUsingGson(ArrayList<T> messages) {
+  private static final <T> String convertToJsonUsingGson(ArrayList<T> messages) {
+    Gson GSON = new Gson();
     return GSON.toJson(messages);
   }
-
-  private static final Gson GSON = new Gson();
 }
