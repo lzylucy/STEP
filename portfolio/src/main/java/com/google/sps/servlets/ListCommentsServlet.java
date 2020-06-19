@@ -60,8 +60,13 @@ public class ListCommentsServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
 
     // Get comment limit and check validity.
-    int commentLimit = getCommentLimit(request);
-    if (commentLimit == -1) {
+    int commentLimit = 0;
+    try {
+      commentLimit = Integer.parseInt(request.getParameter("limit"));
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert to int");
+    }
+    if (commentLimit < 0) {
       response.setContentType("text/html");
       response.getWriter().println("Please enter a non-negative integer");
       return;
@@ -84,24 +89,6 @@ public class ListCommentsServlet extends HttpServlet {
 
     response.setContentType("application/json;");
     response.getWriter().println(convertToJsonUsingGson(messages));
-  }
-
-  /** Returns comment limit entered by the user, or -1 if the number entered was invalid. */
-  private int getCommentLimit(HttpServletRequest request) {
-    try {
-      commentLimit = Integer.parseInt(request.getParameter("limit"));
-    } catch (NumberFormatException e) {
-      System.err.println("Could not convert to int: " + commentLimitString);
-      return -1;
-    }
-
-    // Check if the input is negative.
-    if (commentLimit < 0) {
-      System.err.println("Comment limit must not be negative");
-      return -1;
-    }
-
-    return commentLimit;
   }
 
   /**
