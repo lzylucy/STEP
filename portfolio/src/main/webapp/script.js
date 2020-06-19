@@ -54,9 +54,8 @@ function addRandomFunFact() {
  * Fetches comments from DataServlet and adds them to the page
  */
 function loadComments() {
-  //TODO: replace the hard-code value with user defined value
-  fetch('/list-data?comment-limit=3').then(response => response.json()).then((stats) => {   
-    console.log(stats)
+  const limit = document.getElementById('limit').value;
+  fetch(`/list-data?limit=${limit}`).then(response => response.json()).then((stats) => {   
     const statsListElement = document.getElementById('msg-container');
     statsListElement.innerHTML = '';
       
@@ -68,7 +67,7 @@ function loadComments() {
   });
 }
 
-/** Creates an element that represents a comment, including its delete button. */
+/** Creates an element that represents a comment. */
 function createCommentElement(message) {
   const commentElement = document.createElement('li');
   commentElement.innerText = message.name + "--" + message.job;
@@ -78,21 +77,12 @@ function createCommentElement(message) {
   divElement.innerText = message.comment
   commentElement.appendChild(divElement);
 
-  const deleteButtonElement = document.createElement('button');
-  deleteButtonElement.innerText = 'Delete';
-  deleteButtonElement.addEventListener('click', () => {
-    deleteComment(message);
-    commentElement.remove();
-  });
-  commentElement.appendChild(deleteButtonElement);
-
   return commentElement;
 }
 
-/** Tells the server to delete a comment. */
-function deleteComment(message) {
-  const params = new URLSearchParams();
-  params.append('id', message.id);
-  // TODO: what if deleting the data is not successful, how to check
-  fetch('/delete-data', {method: 'POST', body: params});
+/** Tells the server to delete all comments. */
+function deleteAllComments() {
+  fetch('/delete-data', {method: 'POST'}).then(() => {
+    loadComments();
+  });
 }
