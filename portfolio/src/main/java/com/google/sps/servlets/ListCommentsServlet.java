@@ -56,8 +56,8 @@ public class ListCommentsServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Define a query rule that prioritizes latest messages
-    Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
-    PreparedQuery results = datastore.prepare(query);
+    final Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
+    final PreparedQuery results = datastore.prepare(query);
 
     // Get comment limit and check validity.
     int commentLimit = 0;

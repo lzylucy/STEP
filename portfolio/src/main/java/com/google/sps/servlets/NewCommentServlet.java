@@ -28,14 +28,16 @@ import java.util.ArrayList;
 /** Servlet that stores new comments. */
 @WebServlet("/new-data")
 public class NewCommentServlet extends HttpServlet {
+
+  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Retrieve information from the form and add timestamp
-    String name = getParameterWithDefault(request, "user-name", "Anonymous");
-    String job = getParameterWithDefault(request, "jobs", "Other");
-    String comment = getParameterWithDefault(request, "visitor-comment", "");
-    long timestamp = System.currentTimeMillis();
+    final String name = getParameterWithDefault(request, "user-name", "Anonymous");
+    final String job = getParameterWithDefault(request, "jobs", "Other");
+    final String comment = getParameterWithDefault(request, "visitor-comment", "");
+    final long timestamp = System.currentTimeMillis();
 
     // Store the information if comment is non-empty
     if (!comment.isEmpty()) {
@@ -44,7 +46,6 @@ public class NewCommentServlet extends HttpServlet {
       messageEntity.setProperty("job", job);
       messageEntity.setProperty("comment", comment);
       messageEntity.setProperty("timestamp", timestamp);
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       datastore.put(messageEntity);
     }
 
