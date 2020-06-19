@@ -35,8 +35,8 @@ public class DeleteCommentServlet extends HttpServlet {
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query("Message").setKeysOnly();
-    PreparedQuery results = datastore.prepare(query);
+    final Query query = new Query("Message").setKeysOnly();
+    final PreparedQuery results = datastore.prepare(query);
 
     for (final Entity entity : results.asIterable()) {
       datastore.delete(entity.getKey());
