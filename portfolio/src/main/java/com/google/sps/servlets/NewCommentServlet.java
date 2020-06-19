@@ -29,6 +29,8 @@ import java.util.ArrayList;
 /** Servlet that stores new comments. */
 @WebServlet("/new-data")
 public class NewCommentServlet extends HttpServlet {
+
+  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -45,7 +47,6 @@ public class NewCommentServlet extends HttpServlet {
       messageEntity.setProperty("job", job);
       messageEntity.setProperty("comment", comment);
       messageEntity.setProperty("timestamp", timestamp);
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       datastore.put(messageEntity);
     }
 
