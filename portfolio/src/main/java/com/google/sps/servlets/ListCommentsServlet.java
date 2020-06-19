@@ -87,8 +87,7 @@ public class ListCommentsServlet extends HttpServlet {
 
   /** Returns comment limit entered by the user, or -1 if the number entered was invalid. */
   private int getCommentLimit(HttpServletRequest request) {
-    // Get the input from the query string.
-    String commentLimitString = request.getParameter("comment-limit");
+    String commentLimitString = request.getParameter("limit");
 
     // Convert the input to an int.
     int commentLimit;
@@ -99,9 +98,9 @@ public class ListCommentsServlet extends HttpServlet {
       return -1;
     }
 
-    // Check that the input is non-negative.
+    // Check if the input is negative.
     if (commentLimit < 0) {
-      System.err.println("Comment limit must be non-negative");
+      System.err.println("Comment limit must not be negative");
       return -1;
     }
 
