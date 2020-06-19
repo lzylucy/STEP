@@ -50,12 +50,13 @@ final class Message {
 /** Servlet that returns comments. */
 @WebServlet("/list-data")
 public class ListCommentsServlet extends HttpServlet {
-    
+
+  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Define a query rule that prioritizes latest messages
     Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
     // Get comment limit and check validity.
@@ -70,7 +71,7 @@ public class ListCommentsServlet extends HttpServlet {
     // If limit > number of comments, return all comments;
     // otherwise, return number of comments according to the limit
     ArrayList<Message> messages = new ArrayList<>();
-    for (Entity entity : results.asIterable(FetchOptions.Builder.withLimit(commentLimit))) {
+    for (final Entity entity : results.asIterable(FetchOptions.Builder.withLimit(commentLimit))) {
       long id = entity.getKey().getId();
       String name = (String) entity.getProperty("name");
       String job = (String) entity.getProperty("job");
@@ -87,12 +88,8 @@ public class ListCommentsServlet extends HttpServlet {
 
   /** Returns comment limit entered by the user, or -1 if the number entered was invalid. */
   private int getCommentLimit(HttpServletRequest request) {
-    String commentLimitString = request.getParameter("limit");
-
-    // Convert the input to an int.
-    int commentLimit;
     try {
-      commentLimit = Integer.parseInt(commentLimitString);
+      commentLimit = Integer.parseInt(request.getParameter("limit"));
     } catch (NumberFormatException e) {
       System.err.println("Could not convert to int: " + commentLimitString);
       return -1;
@@ -110,9 +107,8 @@ public class ListCommentsServlet extends HttpServlet {
   /**
    * Converts an ArrayList instance into a JSON string using the Gson library.
    */
-  private <T> String convertToJsonUsingGson(ArrayList<T> messages) {
+  private static final <T> String convertToJsonUsingGson(ArrayList<T> messages) {
+    Gson GSON = new Gson();
     return GSON.toJson(messages);
   }
-
-  private static final Gson GSON = new Gson();
 }
