@@ -21,7 +21,7 @@
   margin-bottom: 20px;
 }
 
-#comment-container {
+#form-container {
   border-radius: 5px;
   background-color: #FFB3D8;
   padding: 20px;
@@ -37,7 +37,7 @@ textarea {
   height: 150px;
 }
 
-input[type=submit] {
+input[type=submit], button {
   width: 30%;
   background-color: #4CAF50;
   color: white;
@@ -48,7 +48,7 @@ input[type=submit] {
   cursor: pointer;
 }
 
-input[type=submit]:hover {
+input[type=submit], button:hover {
   background-color: #45a049;
 }
 
