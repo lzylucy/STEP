@@ -52,12 +52,14 @@ function addRandomFunFact() {
 
 /**
  * Checks user authentication. 
- * If logged in, display comments; if not, display login link
+ * If logged in, displays comments; if not, displays login link
  */
-function loadComments(){
+function loadComments() {
   fetch('/login').then(response => response.text()).then(stats => {
-      if (stats === "1") {
-        getComments();
+      getComments();
+
+      if (stats.trim() === "okay") {
+        document.getElementById("msg-container").style.visibility = "visible";
       } else {
         const statsListElement = document.getElementById('msg-container');
         statsListElement.innerHTML = "<p>Login <a href=\"" + stats + "\">here</a>\
@@ -72,7 +74,7 @@ function loadComments(){
 function getComments() {
   const limit = document.getElementById('limit').value;
 
-  fetch(`/list-data?limit=${limit}`).then(response => {
+  fetch(`/data?limit=${limit}`).then(response => {
     const contentType = response.headers.get("content-type");
     
     // Load comments if the user input is valid
@@ -101,7 +103,7 @@ function getComments() {
 /** Creates an element that represents a comment. */
 function createCommentElement(message) {
   const commentElement = document.createElement('li');
-  commentElement.innerText = message.name + "--" + message.job;
+  commentElement.innerText = message.name + "--" + message.job + "--" + message.email;
 
   const divElement = document.createElement('div')
   divElement.className = "comment"
