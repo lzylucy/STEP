@@ -14,15 +14,9 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,18 +30,13 @@ public class LoginServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html");
-    PrintWriter out = response.getWriter();
 
     if (userService.isUserLoggedIn()) {
-      out.println("1");
-    //   String logoutUrl = userService.createLogoutURL("/login");
-    //   out.println("<h1>You've logged in! Welcome!</h1>");
-    //   out.println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
+      response.getWriter().println("okay");
     } else {
+      // Return Login link if user is not logged in
       String loginUrl = userService.createLoginURL("/login");
-      out.println(loginUrl);
-    //   out.println("<h1>Please log in here</h1>");
-    //   out.println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
+      response.getWriter().println(loginUrl);
     }
   }
 }
