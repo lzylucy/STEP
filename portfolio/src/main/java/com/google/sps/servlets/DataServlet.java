@@ -86,7 +86,7 @@ public class DataServlet extends HttpServlet {
       long id = entity.getKey().getId();
       String name = (String) entity.getProperty("name");
       String job = (String) entity.getProperty("job");
-      String email = userService.getCurrentUser().getEmail();
+      String email = (String) entity.getProperty("email");
       String comment = (String) entity.getProperty("comment");
       long timestamp = (long) entity.getProperty("timestamp");
 
@@ -104,6 +104,7 @@ public class DataServlet extends HttpServlet {
     // Retrieve information from the form and add timestamp
     final String name = getParameterWithDefault(request, "user-name", "Anonymous");
     final String job = getParameterWithDefault(request, "jobs", "Other");
+    final String email = userService.getCurrentUser().getEmail();
     final String comment = getParameterWithDefault(request, "visitor-comment", "");
     final long timestamp = System.currentTimeMillis();
 
@@ -112,6 +113,7 @@ public class DataServlet extends HttpServlet {
       Entity messageEntity = new Entity("Message");
       messageEntity.setProperty("name", name);
       messageEntity.setProperty("job", job);
+      messageEntity.setProperty("email", email);
       messageEntity.setProperty("comment", comment);
       messageEntity.setProperty("timestamp", timestamp);
       datastore.put(messageEntity);
