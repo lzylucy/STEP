@@ -44,8 +44,8 @@ public class LoginServlet extends HttpServlet {
     //   out.println("<h1>You've logged in! Welcome!</h1>");
     //   out.println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
     } else {
-      out.println("0");
-    //   String loginUrl = userService.createLoginURL("/login");
+      String loginUrl = userService.createLoginURL("/login");
+      out.println(loginUrl);
     //   out.println("<h1>Please log in here</h1>");
     //   out.println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
     }

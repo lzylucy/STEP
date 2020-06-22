@@ -51,10 +51,27 @@ function addRandomFunFact() {
 }
 
 /**
+ * Checks user authentication. 
+ * If logged in, display comments; if not, display login link
+ */
+function loadComments(){
+  fetch('/login').then(response => response.text()).then(stats => {
+      if (stats === "1") {
+        getComments();
+      } else {
+        const statsListElement = document.getElementById('msg-container');
+        statsListElement.innerHTML = "<p>Login <a href=\"" + stats + "\">here</a>\
+          to see comments</p>";
+      }
+  });
+}
+
+/**
  * Fetches comments from DataServlet and adds them to the page
  */
-function loadComments() {
+function getComments() {
   const limit = document.getElementById('limit').value;
+
   fetch(`/list-data?limit=${limit}`).then(response => {
     const contentType = response.headers.get("content-type");
     
