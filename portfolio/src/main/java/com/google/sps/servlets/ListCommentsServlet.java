@@ -33,14 +33,17 @@ import java.util.ArrayList;
 @WebServlet("/list-data")
 public class ListCommentsServlet extends HttpServlet {
 
-  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private static final DatastoreService DATASTORE = 
+    DatastoreServiceFactory.getDatastoreService();
   private static final Gson GSON = new Gson();
   
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(HttpServletRequest request, 
+                    HttpServletResponse response) throws IOException {
     // Define a query rule that prioritizes latest messages
-    Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
-    PreparedQuery results = datastore.prepare(query);
+    Query query = new Query("Message").addSort("timestamp", 
+                                               SortDirection.DESCENDING);
+    PreparedQuery results = DATASTORE.prepare(query);
  
     // Retrieve all history comments from datastore
     ArrayList<Message> messages = new ArrayList<>();
@@ -56,13 +59,13 @@ public class ListCommentsServlet extends HttpServlet {
     }
 
     response.setContentType("application/json;");
-    response.getWriter().println(convertToJsonUsingGson(messages));
+    response.getWriter().println(convertToJson(messages));
   }
 
   /**
    * Converts an ArrayList instance into a JSON string using the Gson library.
    */
-  private static final <T> String convertToJsonUsingGson(ArrayList<T> messages) {
+  private static final <T> String convertToJson(ArrayList<T> messages) {
     return GSON.toJson(messages);
   }
 }

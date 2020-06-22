@@ -30,10 +30,12 @@ import java.util.ArrayList;
 @WebServlet("/new-data")
 public class NewCommentServlet extends HttpServlet {
 
-  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private static final DatastoreService DATASTORE = 
+    DatastoreServiceFactory.getDatastoreService();
     
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, 
+                     HttpServletResponse response) throws IOException {
     // Retrieve information from the form and add timestamp
     String name = getParameterWithDefault(request, "user-name", "Anonymous");
     String job = getParameterWithDefault(request, "jobs", "Other");
@@ -47,7 +49,7 @@ public class NewCommentServlet extends HttpServlet {
       messageEntity.setProperty("job", job);
       messageEntity.setProperty("comment", comment);
       messageEntity.setProperty("timestamp", timestamp);
-      datastore.put(messageEntity);
+      DATASTORE.put(messageEntity);
     }
 
     // Redirect back to the HTML page.
@@ -58,7 +60,8 @@ public class NewCommentServlet extends HttpServlet {
    * @return the request parameter, or the default value if the parameter
    *         was not specified by the client
    */
-  private String getParameterWithDefault(HttpServletRequest request, String name, String defaultValue) {
+  private String getParameterWithDefault(HttpServletRequest request, 
+                                         String name, String defaultValue) {
     String value = request.getParameter(name);
     if (value == null) {
       return defaultValue;
