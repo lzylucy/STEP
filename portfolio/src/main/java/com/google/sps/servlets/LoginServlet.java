@@ -30,12 +30,12 @@ public class LoginServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html");
-
+    
     if (userService.isUserLoggedIn()) {
       response.getWriter().println("okay");
     } else {
       // Return Login link if user is not logged in
-      String loginUrl = userService.createLoginURL("/login");
+      String loginUrl = userService.createLoginURL("/index.html");
       response.getWriter().println(loginUrl);
     }
   }
