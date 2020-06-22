@@ -56,15 +56,13 @@ function addRandomFunFact() {
  */
 function loadComments() {
   fetch('/login').then(response => response.text()).then(stats => {
+    if (stats.trim() === "okay") {
       getComments();
-
-      if (stats.trim() === "okay") {
-        document.getElementById("msg-container").style.visibility = "visible";
-      } else {
-        const statsListElement = document.getElementById('msg-container');
-        statsListElement.innerHTML = "<p>Login <a href=\"" + stats + "\">here</a>\
-          to see comments</p>";
-      }
+    } else {
+      const statsListElement = document.getElementById('msg-container');
+      statsListElement.innerHTML = "<p>Login <a href=\"" + stats + "\">here</a>\
+        to see comments</p>";
+    }
   });
 }
 
