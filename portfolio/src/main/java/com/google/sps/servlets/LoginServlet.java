@@ -25,17 +25,19 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-  private static final UserService userService = UserServiceFactory.getUserService();
+  private static final UserService USERSERVICE = 
+    UserServiceFactory.getUserService();
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(HttpServletRequest request, 
+                    HttpServletResponse response) throws IOException {
     response.setContentType("text/html");
     
-    if (userService.isUserLoggedIn()) {
+    if (USERSERVICE.isUserLoggedIn()) {
       response.getWriter().println("okay");
     } else {
       // Return Login link if user is not logged in
-      String loginUrl = userService.createLoginURL("/index.html");
+      String loginUrl = USERSERVICE.createLoginURL("/index.html");
       response.getWriter().println(loginUrl);
     }
   }

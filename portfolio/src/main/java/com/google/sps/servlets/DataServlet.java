@@ -55,15 +55,19 @@ final class Message {
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private static final UserService userService = UserServiceFactory.getUserService();
+  private static final DatastoreService DATASTORE = 
+    DatastoreServiceFactory.getDatastoreService();
+  private static final UserService USERSERVICE = 
+    UserServiceFactory.getUserService();
   private static final Gson GSON = new Gson();
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(HttpServletRequest request, 
+                    HttpServletResponse response) throws IOException {
     // Define a query rule that prioritizes latest messages
-    final Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
-    final PreparedQuery results = datastore.prepare(query);
+    final Query query = new Query("Message").addSort("timestamp", 
+                                                     SortDirection.DESCENDING);
+    final PreparedQuery results = DATASTORE.prepare(query);
 
     // Get comment limit and check validity.
     int commentLimit = 0;
@@ -82,7 +86,8 @@ public class DataServlet extends HttpServlet {
     // If limit > number of comments, return all comments;
     // otherwise, return number of comments according to the limit
     ArrayList<Message> messages = new ArrayList<>();
-    for (final Entity entity : results.asIterable(FetchOptions.Builder.withLimit(commentLimit))) {
+    for (final Entity entity : 
+           results.asIterable(FetchOptions.Builder.withLimit(commentLimit))) {
       long id = entity.getKey().getId();
       String name = (String) entity.getProperty("name");
       String job = (String) entity.getProperty("job");
@@ -96,16 +101,19 @@ public class DataServlet extends HttpServlet {
     }
 
     response.setContentType("application/json;");
-    response.getWriter().println(convertToJsonUsingGson(messages));
+    response.getWriter().println(convertToJson(messages));
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, 
+                     HttpServletResponse response) throws IOException {
     // Retrieve information from the form and add timestamp
-    final String name = getParameterWithDefault(request, "user-name", "Anonymous");
+    final String name = 
+      getParameterWithDefault(request, "user-name", "Anonymous");
     final String job = getParameterWithDefault(request, "jobs", "Other");
-    final String email = userService.getCurrentUser().getEmail();
-    final String comment = getParameterWithDefault(request, "visitor-comment", "");
+    final String email = USERSERVICE.getCurrentUser().getEmail();
+    final String comment = 
+      getParameterWithDefault(request, "visitor-comment", "");
     final long timestamp = System.currentTimeMillis();
 
     // Store the information if comment is non-empty
@@ -116,7 +124,7 @@ public class DataServlet extends HttpServlet {
       messageEntity.setProperty("email", email);
       messageEntity.setProperty("comment", comment);
       messageEntity.setProperty("timestamp", timestamp);
-      datastore.put(messageEntity);
+      DATASTORE.put(messageEntity);
     }
 
     // Redirect back to the HTML page.
@@ -127,7 +135,8 @@ public class DataServlet extends HttpServlet {
    * @return the request parameter, or the default value if the parameter
    *         was not specified by the client
    */
-  private String getParameterWithDefault(HttpServletRequest request, String name, String defaultValue) {
+  private String getParameterWithDefault(HttpServletRequest request, 
+                                         String name, String defaultValue) {
     String value = request.getParameter(name);
     if (value == null || value.isEmpty()) {
       return defaultValue;
@@ -138,7 +147,7 @@ public class DataServlet extends HttpServlet {
   /**
    * Converts an ArrayList instance into a JSON string using the Gson library.
    */
-  private static final <T> String convertToJsonUsingGson(ArrayList<T> messages) {
+  private static final <T> String convertToJson(ArrayList<T> messages) {
     return GSON.toJson(messages);
   }
 }
