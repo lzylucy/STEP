@@ -16,6 +16,8 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -32,10 +34,11 @@ import java.util.ArrayList;
 /** An item containing visitor information and comment. */
 final class Message {
     
-  public Message(long id, String name, String job, String comment, long timestamp) {
+  public Message(long id, String name, String job, String email, String comment, long timestamp) {
     this.id = id;
     this.name = name;
     this.job = job;
+    this.email = email;
     this.comment = comment;
     this.timestamp = timestamp;
   }
@@ -43,15 +46,18 @@ final class Message {
   private final long id;
   private final String name;
   private final String job;
+  private final String email;
   private final String comment;
   private final long timestamp;
 }
 
 /** Servlet that returns comments. */
-@WebServlet("/list-data")
-public class ListCommentsServlet extends HttpServlet {
+@WebServlet("/data")
+public class DataServlet extends HttpServlet {
 
   private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private static final UserService userService = UserServiceFactory.getUserService();
+  private static final Gson GSON = new Gson();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -80,10 +86,12 @@ public class ListCommentsServlet extends HttpServlet {
       long id = entity.getKey().getId();
       String name = (String) entity.getProperty("name");
       String job = (String) entity.getProperty("job");
+      String email = userService.getCurrentUser().getEmail();
       String comment = (String) entity.getProperty("comment");
       long timestamp = (long) entity.getProperty("timestamp");
+
  
-      Message msg = new Message(id, name, job, comment, timestamp);
+      Message msg = new Message(id, name, job, email, comment, timestamp);
       messages.add(msg);
     }
 
@@ -91,11 +99,44 @@ public class ListCommentsServlet extends HttpServlet {
     response.getWriter().println(convertToJsonUsingGson(messages));
   }
 
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Retrieve information from the form and add timestamp
+    final String name = getParameterWithDefault(request, "user-name", "Anonymous");
+    final String job = getParameterWithDefault(request, "jobs", "Other");
+    final String comment = getParameterWithDefault(request, "visitor-comment", "");
+    final long timestamp = System.currentTimeMillis();
+
+    // Store the information if comment is non-empty
+    if (!comment.isEmpty()) {
+      Entity messageEntity = new Entity("Message");
+      messageEntity.setProperty("name", name);
+      messageEntity.setProperty("job", job);
+      messageEntity.setProperty("comment", comment);
+      messageEntity.setProperty("timestamp", timestamp);
+      datastore.put(messageEntity);
+    }
+
+    // Redirect back to the HTML page.
+    response.sendRedirect("/index.html");
+  }
+
+  /**
+   * @return the request parameter, or the default value if the parameter
+   *         was not specified by the client
+   */
+  private String getParameterWithDefault(HttpServletRequest request, String name, String defaultValue) {
+    String value = request.getParameter(name);
+    if (value == null || value.isEmpty()) {
+      return defaultValue;
+    }
+    return value;
+  }
+
   /**
    * Converts an ArrayList instance into a JSON string using the Gson library.
    */
   private static final <T> String convertToJsonUsingGson(ArrayList<T> messages) {
-    Gson GSON = new Gson();
     return GSON.toJson(messages);
   }
 }
