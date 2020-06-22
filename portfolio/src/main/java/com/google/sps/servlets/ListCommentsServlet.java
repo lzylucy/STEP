@@ -34,6 +34,7 @@ import java.util.ArrayList;
 public class ListCommentsServlet extends HttpServlet {
 
   private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private static final Gson GSON = new Gson();
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -62,7 +63,6 @@ public class ListCommentsServlet extends HttpServlet {
    * Converts an ArrayList instance into a JSON string using the Gson library.
    */
   private static final <T> String convertToJsonUsingGson(ArrayList<T> messages) {
-    Gson GSON = new Gson();
     return GSON.toJson(messages);
   }
 }
