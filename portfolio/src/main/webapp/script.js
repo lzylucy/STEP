@@ -84,7 +84,7 @@ function getComments() {
     .then((stats) => {
       const statsListElement = document.getElementById('msg-container');
       statsListElement.innerHTML = '';
-      
+
       if (stats) {
         stats.forEach((message) => {
         statsListElement.appendChild(createCommentElement(message));
