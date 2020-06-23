@@ -51,13 +51,17 @@ final class Message {
 @WebServlet("/list-data")
 public class ListCommentsServlet extends HttpServlet {
 
-  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
+  private static final DatastoreService DATASTORE = 
+    DatastoreServiceFactory.getDatastoreService();
+  private static final Gson GSON = new Gson();
+  
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(HttpServletRequest request, 
+                    HttpServletResponse response) throws IOException {
     // Define a query rule that prioritizes latest messages
-    final Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
-    final PreparedQuery results = datastore.prepare(query);
+    Query query = new Query("Message").addSort("timestamp", 
+                                               SortDirection.DESCENDING);
+    PreparedQuery results = DATASTORE.prepare(query);
 
     // Get comment limit and check validity.
     int commentLimit = 0;
@@ -71,7 +75,7 @@ public class ListCommentsServlet extends HttpServlet {
       response.getWriter().println("Please enter a non-negative integer");
       return;
     }
-
+    
     // Retrieve all history comments from datastore
     // If limit > number of comments, return all comments;
     // otherwise, return number of comments according to the limit
@@ -88,14 +92,13 @@ public class ListCommentsServlet extends HttpServlet {
     }
 
     response.setContentType("application/json;");
-    response.getWriter().println(convertToJsonUsingGson(messages));
+    response.getWriter().println(convertToJson(messages));
   }
 
   /**
    * Converts an ArrayList instance into a JSON string using the Gson library.
    */
-  private static final <T> String convertToJsonUsingGson(ArrayList<T> messages) {
-    Gson GSON = new Gson();
+  private static final <T> String convertToJson(ArrayList<T> messages) {
     return GSON.toJson(messages);
   }
 }
