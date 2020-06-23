@@ -51,15 +51,19 @@ final class Message {
 @WebServlet("/list-data")
 public class ListCommentsServlet extends HttpServlet {
 
-  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
+  private static final DatastoreService DATASTORE = 
+    DatastoreServiceFactory.getDatastoreService();
+  private static final Gson GSON = new Gson();
+  
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(HttpServletRequest request, 
+                    HttpServletResponse response) throws IOException {
     // Define a query rule that prioritizes latest messages
-    final Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
-    final PreparedQuery results = datastore.prepare(query);
+    Query query = new Query("Message").addSort("timestamp", 
+                                               SortDirection.DESCENDING);
+    PreparedQuery results = DATASTORE.prepare(query);
 
-    // Get comment limit and check validity.
+    // Get comment limit and convert to integer.
     int commentLimit = 0;
     try {
       commentLimit = Integer.parseInt(getParameterWithDefault(request, "limit", "0"));
@@ -83,7 +87,7 @@ public class ListCommentsServlet extends HttpServlet {
     }
 
     response.setContentType("application/json;");
-    response.getWriter().println(convertToJsonUsingGson(messages));
+    response.getWriter().println(convertToJson(messages));
   }
 
   /**
@@ -101,8 +105,7 @@ public class ListCommentsServlet extends HttpServlet {
   /**
    * Converts an ArrayList instance into a JSON string using the Gson library.
    */
-  private static final <T> String convertToJsonUsingGson(ArrayList<T> messages) {
-    Gson GSON = new Gson();
+  private static final <T> String convertToJson(ArrayList<T> messages) {
     return GSON.toJson(messages);
   }
 }
