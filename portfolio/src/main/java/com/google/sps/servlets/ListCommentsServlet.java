@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.servlets.Utilities;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -26,7 +27,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.Gson;
 import java.util.ArrayList;
 
 /** An item containing visitor information and comment. */
@@ -53,7 +53,6 @@ public class ListCommentsServlet extends HttpServlet {
 
   private static final DatastoreService DATASTORE = 
     DatastoreServiceFactory.getDatastoreService();
-  private static final Gson GSON = new Gson();
   
   @Override
   public void doGet(HttpServletRequest request, 
@@ -64,9 +63,12 @@ public class ListCommentsServlet extends HttpServlet {
     PreparedQuery results = DATASTORE.prepare(query);
 
     // Get comment limit and convert to integer.
+    // Set comment limit to 0 if input is invalid
     int commentLimit = 0;
     try {
-      commentLimit = Integer.parseInt(getParameterWithDefault(request, "limit", "0"));
+      commentLimit = Integer.parseInt(Utilities.getParameterWithDefault(
+        request, "limit", "0"));
+      commentLimit = Math.max(commentLimit, 0);
     } catch (NumberFormatException e) {
       System.err.println("Could not convert to int");
     }
@@ -75,7 +77,8 @@ public class ListCommentsServlet extends HttpServlet {
     // If limit > number of comments, return all comments;
     // otherwise, return number of comments according to the limit
     ArrayList<Message> messages = new ArrayList<>();
-    for (final Entity entity : results.asIterable(FetchOptions.Builder.withLimit(commentLimit))) {
+    for (final Entity entity : results.asIterable(
+           FetchOptions.Builder.withLimit(commentLimit))) {
       long id = entity.getKey().getId();
       String name = (String) entity.getProperty("name");
       String job = (String) entity.getProperty("job");
@@ -87,25 +90,6 @@ public class ListCommentsServlet extends HttpServlet {
     }
 
     response.setContentType("application/json;");
-    response.getWriter().println(convertToJson(messages));
-  }
-
-  /**
-   * @return the request parameter, or the default value if the parameter
-   *         was not specified by the client
-   */
-  private String getParameterWithDefault(HttpServletRequest request, String name, String defaultValue) {
-    String value = request.getParameter(name);
-    if (value == null) {
-      return defaultValue;
-    }
-    return value;
-  }
-
-  /**
-   * Converts an ArrayList instance into a JSON string using the Gson library.
-   */
-  private static final <T> String convertToJson(ArrayList<T> messages) {
-    return GSON.toJson(messages);
+    response.getWriter().println(Utilities.convertToJson(messages));
   }
 }
