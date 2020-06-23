@@ -17,6 +17,8 @@ package com.google.sps.servlets;
 import com.google.sps.servlets.Utilities;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -30,6 +32,8 @@ public class NewCommentServlet extends HttpServlet {
 
   private static final DatastoreService DATASTORE = 
     DatastoreServiceFactory.getDatastoreService();
+  private static final UserService USERSERVICE =
+    UserServiceFactory.getUserService();
     
   @Override
   public void doPost(HttpServletRequest request, 
@@ -39,6 +43,7 @@ public class NewCommentServlet extends HttpServlet {
       request, "user-name", "Anonymous");
     final String job = Utilities.getParameterWithDefault(
       request, "jobs", "Other");
+    final String email = USERSERVICE.getCurrentUser().getEmail();
     final String comment = Utilities.getParameterWithDefault(
       request, "visitor-comment", "");
     final long timestamp = System.currentTimeMillis();
@@ -48,6 +53,7 @@ public class NewCommentServlet extends HttpServlet {
       Entity messageEntity = new Entity("Message");
       messageEntity.setProperty("name", name);
       messageEntity.setProperty("job", job);
+      messageEntity.setProperty("email", email);
       messageEntity.setProperty("comment", comment);
       messageEntity.setProperty("timestamp", timestamp);
       DATASTORE.put(messageEntity);

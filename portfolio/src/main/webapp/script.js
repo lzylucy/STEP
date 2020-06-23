@@ -51,9 +51,25 @@ function addRandomFunFact() {
 }
 
 /**
- * Fetches comments from DataServlet and adds them to the page
+ * Checks user authentication. 
+ * If logged in, displays comments; if not, displays login link
  */
 function loadComments() {
+  fetch('/login').then(response => response.text()).then(stats => {
+    if (stats.trim() === "okay") {
+      getComments();
+    } else {
+      const statsListElement = document.getElementById('msg-container');
+      statsListElement.innerHTML = "<p>Login <a href=\"" + stats + "\">here</a>\
+        to see comments</p>";
+    }
+  });
+}
+
+/**
+ * Fetches comments from DataServlet and adds them to the page
+ */
+function getComments() {
   const limit = document.getElementById('limit').value;
 
   // Pop up an alert window if input is invalid
@@ -80,7 +96,8 @@ function loadComments() {
 /** Creates an element that represents a comment. */
 function createCommentElement(message) {
   const commentElement = document.createElement('li');
-  commentElement.innerText = message.name + "--" + message.job;
+  commentElement.innerText = message.name + "--" + message.job 
+                                          + "--" + message.email;
 
   const divElement = document.createElement('div')
   divElement.className = "comment"

@@ -32,10 +32,12 @@ import java.util.ArrayList;
 /** An item containing visitor information and comment. */
 final class Message {
     
-  public Message(long id, String name, String job, String comment, long timestamp) {
+  public Message(long id, String name, String job, String email, 
+                 String comment, long timestamp) {
     this.id = id;
     this.name = name;
     this.job = job;
+    this.email = email;
     this.comment = comment;
     this.timestamp = timestamp;
   }
@@ -43,6 +45,7 @@ final class Message {
   private final long id;
   private final String name;
   private final String job;
+  private final String email;
   private final String comment;
   private final long timestamp;
 }
@@ -79,13 +82,14 @@ public class ListCommentsServlet extends HttpServlet {
     ArrayList<Message> messages = new ArrayList<>();
     for (final Entity entity : results.asIterable(
            FetchOptions.Builder.withLimit(commentLimit))) {
-      long id = entity.getKey().getId();
-      String name = (String) entity.getProperty("name");
-      String job = (String) entity.getProperty("job");
-      String comment = (String) entity.getProperty("comment");
-      long timestamp = (long) entity.getProperty("timestamp");
+      final long id = entity.getKey().getId();
+      final String name = (String) entity.getProperty("name");
+      final String job = (String) entity.getProperty("job");
+      final String email = (String) entity.getProperty("email");
+      final String comment = (String) entity.getProperty("comment");
+      final long timestamp = (long) entity.getProperty("timestamp");
  
-      Message msg = new Message(id, name, job, comment, timestamp);
+      Message msg = new Message(id, name, job, email, comment, timestamp);
       messages.add(msg);
     }
 
