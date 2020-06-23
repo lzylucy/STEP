@@ -62,14 +62,9 @@ public class ListCommentsServlet extends HttpServlet {
     // Get comment limit and check validity.
     int commentLimit = 0;
     try {
-      commentLimit = Integer.parseInt(request.getParameter("limit"));
+      commentLimit = Integer.parseInt(getParameterWithDefault(request, "limit", "0"));
     } catch (NumberFormatException e) {
       System.err.println("Could not convert to int");
-    }
-    if (commentLimit < 0) {
-      response.setContentType("text/html");
-      response.getWriter().println("Please enter a non-negative integer");
-      return;
     }
 
     // Retrieve all history comments from datastore
@@ -89,6 +84,18 @@ public class ListCommentsServlet extends HttpServlet {
 
     response.setContentType("application/json;");
     response.getWriter().println(convertToJsonUsingGson(messages));
+  }
+
+  /**
+   * @return the request parameter, or the default value if the parameter
+   *         was not specified by the client
+   */
+  private String getParameterWithDefault(HttpServletRequest request, String name, String defaultValue) {
+    String value = request.getParameter(name);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value;
   }
 
   /**
