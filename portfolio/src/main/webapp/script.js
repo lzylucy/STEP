@@ -55,29 +55,25 @@ function addRandomFunFact() {
  */
 function loadComments() {
   const limit = document.getElementById('limit').value;
-  fetch(`/list-data?limit=${limit}`).then(response => {
-    const contentType = response.headers.get("content-type");
-    
-    // Load comments if the user input is valid
-    if (contentType.indexOf("application/json") != -1) {
-      return response.json().then((stats) => { 
-        const statsListElement = document.getElementById('msg-container');
-        statsListElement.innerHTML = '';
+
+  // Pop up an alert window if input is invalid
+  if (limit < 0) {
+    alert("Please enter a non-negative integer");
+    return;
+  }
+
+  // Load messages if input is valid
+  fetch(`/list-data?limit=${limit}`)
+    .then(response => response.json())
+    .then((stats) => {
+      const statsListElement = document.getElementById('msg-container');
+      statsListElement.innerHTML = '';
       
-        if (stats) {
-          stats.forEach((message) => {
-            statsListElement.appendChild(createCommentElement(message));
-          });
-        }
-      });
-    }
-    
-    // Pop up an alert window if user input is invalid
-    if (contentType.indexOf("text/html") != -1) {
-      return response.text().then((text) => {
-          alert(text);
-      });
-    }
+      if (stats) {
+        stats.forEach((message) => {
+        statsListElement.appendChild(createCommentElement(message));
+        });
+      }
   });
 }
 
