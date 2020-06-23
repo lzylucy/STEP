@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.servlets.Utilities;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -22,8 +23,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.Gson;
-import java.util.ArrayList;
 
 /** Servlet that stores new comments. */
 @WebServlet("/new-data")
@@ -36,9 +35,12 @@ public class NewCommentServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, 
                      HttpServletResponse response) throws IOException {
     // Retrieve information from the form and add timestamp
-    final String name = getParameterWithDefault(request, "user-name", "Anonymous");
-    final String job = getParameterWithDefault(request, "jobs", "Other");
-    final String comment = getParameterWithDefault(request, "visitor-comment", "");
+    final String name = Utilities.getParameterWithDefault(
+      request, "user-name", "Anonymous");
+    final String job = Utilities.getParameterWithDefault(
+      request, "jobs", "Other");
+    final String comment = Utilities.getParameterWithDefault(
+      request, "visitor-comment", "");
     final long timestamp = System.currentTimeMillis();
 
     // Store the information if comment is non-empty
@@ -53,18 +55,5 @@ public class NewCommentServlet extends HttpServlet {
 
     // Redirect back to the HTML page.
     response.sendRedirect("/index.html");
-  }
-
-  /**
-   * @return the request parameter, or the default value if the parameter
-   *         was not specified by the client
-   */
-  private String getParameterWithDefault(HttpServletRequest request, 
-                                         String name, String defaultValue) {
-    String value = request.getParameter(name);
-    if (value == null) {
-      return defaultValue;
-    }
-    return value;
   }
 }
