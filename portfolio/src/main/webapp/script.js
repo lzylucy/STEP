@@ -113,3 +113,49 @@ function deleteAllComments() {
     loadComments();
   });
 }
+
+/** Fetches blobstore url and then shows form  */
+function fetchBlobstoreUrlAndShowForm() {
+  fetch('/blobstore-image-upload')
+    .then((response) => {
+    return response.text();
+    })
+    .then((imageUploadUrl) => {
+    const messageForm = document.getElementById('my-form');
+    messageForm.action = imageUploadUrl;
+    messageForm.classList.remove('hidden');
+    });
+}
+
+/** Fetches image urls and display images */
+function loadNewImages() {
+  fetch('/new-image')
+    .then((response) => {
+    return response.json();
+    })
+    .then((imageUrls) => {
+      const statsListElement = document.getElementById('images'); 
+      statsListElement.innerHTML = '';
+
+      if (imageUrls) {
+        imageUrls.forEach((imageUrl) => {
+        statsListElement.appendChild(createImageElement(imageUrl));
+        });
+      }
+    });
+}
+
+/** Creates an element that represents an image (clickable). */
+function createImageElement(imageUrl) {
+  const referElement = document.createElement('a');
+  referElement.href = imageUrl;
+  const imageElement = document.createElement('img');
+  imageElement.src = imageUrl;
+  referElement.appendChild(imageElement);
+  return referElement;
+}
+
+window.onload = function() {
+  fetchBlobstoreUrlAndShowForm();
+  loadNewImages();
+}
