@@ -53,32 +53,46 @@ function addRandomFunFact() {
 /**
  * Fetches comments from DataServlet and adds them to the page
  */
-function getCommentsUsingArrowFunctions() {
-    fetch('/list-data').then(response => response.json()).then((stats) => {   
-      console.log(stats)
+function loadComments() {
+  const limit = document.getElementById('limit').value;
+
+  // Pop up an alert window if input is invalid
+  if (limit < 0) {
+    alert("Please enter a non-negative integer");
+    return;
+  }
+
+  // Load messages if input is valid
+  fetch(`/list-data?limit=${limit}`)
+    .then(response => response.json())
+    .then((stats) => {
       const statsListElement = document.getElementById('msg-container');
       statsListElement.innerHTML = '';
       
       if (stats) {
-        for (let i=0; i<stats.length; i++) {
-          statsListElement.appendChild(
-              createListElement(stats[i].name + " -- " + stats[i].job, 
-                                stats[i].comment));
-        }
+        stats.forEach((message) => {
+        statsListElement.appendChild(createCommentElement(message));
+        });
       }
-    });
+  });
 }
 
-/** 
- * Creates a <li> element containing commenter identity 
- * and a child <div> element containing the comment.
- */
-function createListElement(identity, comment) {
-  const liElement = document.createElement('li');
-  liElement.innerText = identity;
+/** Creates an element that represents a comment. */
+function createCommentElement(message) {
+  const commentElement = document.createElement('li');
+  commentElement.innerText = message.name + "--" + message.job;
+
   const divElement = document.createElement('div')
   divElement.className = "comment"
-  divElement.innerText = comment
-  liElement.appendChild(divElement);
-  return liElement;
+  divElement.innerText = message.comment
+  commentElement.appendChild(divElement);
+
+  return commentElement;
+}
+
+/** Tells the server to delete all comments. */
+function deleteAllComments() {
+  fetch('/delete-data', {method: 'POST'}).then(() => {
+    loadComments();
+  });
 }

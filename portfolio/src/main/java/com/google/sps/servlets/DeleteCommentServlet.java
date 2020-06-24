@@ -14,46 +14,32 @@
 
 package com.google.sps.servlets;
 
-import com.google.sps.servlets.Utilities;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that stores new comments. */
-@WebServlet("/new-data")
-public class NewCommentServlet extends HttpServlet {
-
+/** Servlet responsible for deleting comments. */
+@WebServlet("/delete-data")
+public class DeleteCommentServlet extends HttpServlet {
+ 
   private static final DatastoreService DATASTORE = 
     DatastoreServiceFactory.getDatastoreService();
-    
+  
   @Override
   public void doPost(HttpServletRequest request, 
                      HttpServletResponse response) throws IOException {
-    // Retrieve information from the form and add timestamp
-    final String name = Utilities.getParameterWithDefault(
-      request, "user-name", "Anonymous");
-    final String job = Utilities.getParameterWithDefault(
-      request, "jobs", "Other");
-    final String comment = Utilities.getParameterWithDefault(
-      request, "visitor-comment", "");
-    final long timestamp = System.currentTimeMillis();
+    final Query query = new Query("Message").setKeysOnly();
+    final PreparedQuery results = DATASTORE.prepare(query);
 
-    // Store the information if comment is non-empty
-    if (!comment.isEmpty()) {
-      Entity messageEntity = new Entity("Message");
-      messageEntity.setProperty("name", name);
-      messageEntity.setProperty("job", job);
-      messageEntity.setProperty("comment", comment);
-      messageEntity.setProperty("timestamp", timestamp);
-      DATASTORE.put(messageEntity);
+    for (final Entity entity : results.asIterable()) {
+      DATASTORE.delete(entity.getKey());
     }
-
-    // Redirect back to the HTML page.
-    response.sendRedirect("/index.html");
   }
 }

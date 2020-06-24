@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body onload="getCommentsUsingArrowFunctions()">
+  <body onload="loadComments()">
     <div id="content">
       <h1>Welcome to Sunflower's Homepage</h1>
 
@@ -78,8 +78,12 @@
       <p>Click here to get a random fun fact about me:</p>
       <button onclick="addRandomFunFact()">Fun Fact</button>
       <div id="funfact-container"></div>
+  
+      <label for="limit">Set comment limit here:</label>
+      <input type="number" id="limit" name="limit" min="1" max="6"
+             value="3" onchange="loadComments()">
 
-      <div id="comment-container">
+      <div id="form-container">
         <form action="/new-data" method="POST">
 
           <label for="user-name">Your Name:</label>
@@ -94,16 +98,20 @@
           </select>
 
           <p>Feel free to leave a comment here:</p>
-          <textarea id="visitor-comment" 
-                    name="visitor-comment">Enter your comment here</textarea>
+          <textarea id="visitor-comment" name="visitor-comment"></textarea>
           <br><br>
 
-          <input type="submit" />
+          <input type="submit" /> 
         </form>
       </div>
-
-      <p>Comments</p>
-      <div id="msg-container"></div>
+      
+      <div id="comment-container">
+        <p>Comments</p>
+        <div id="msg-container"></div>
+        <button type="button" onclick="deleteAllComments()">
+          Delete Comments
+        </button>
+      </div>
 
       <a href="https://github.com/xiaoluLucy814?tab=repositories">GitHub profile</a>
       <a href="https://linkedin.com/in/zeyi-liu-38789b16b/">LinkedIn profile</a>
