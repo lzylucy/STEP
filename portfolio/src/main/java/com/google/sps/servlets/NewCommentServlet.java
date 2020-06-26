@@ -43,13 +43,13 @@ import javax.servlet.http.HttpServletResponse;
 public class NewCommentServlet extends HttpServlet {
 
   private static final DatastoreService DATASTORE = 
-    DatastoreServiceFactory.getDatastoreService();
+      DatastoreServiceFactory.getDatastoreService();
   private static final UserService USERSERVICE =
-    UserServiceFactory.getUserService();
+      UserServiceFactory.getUserService();
   private static final BlobstoreService BLOBSTORESERVICE = 
-    BlobstoreServiceFactory.getBlobstoreService();
+      BlobstoreServiceFactory.getBlobstoreService();
   private static final ImagesService IMAGESSERVICE = 
-    ImagesServiceFactory.getImagesService();
+      ImagesServiceFactory.getImagesService();
     
   @Override
   public void doPost(HttpServletRequest request, 
@@ -63,14 +63,14 @@ public class NewCommentServlet extends HttpServlet {
     final String comment = Utilities.getParameterWithDefault(
       request, "visitor-comment", "");
     String imageUrl = "";
+    final long timestamp = System.currentTimeMillis();
     
     BlobKey blobKey = getBlobKey(request, "image");
-    // User didn't upload a file, make imageUrl empty
+    // Get uploaded file url if user uploaded a file
+    // Otherwise, make the imageUrl empty
     if (blobKey != null) {
       imageUrl = getUploadedFileUrl(blobKey);
     }
-
-    final long timestamp = System.currentTimeMillis();
 
     // Store the information if comment is non-empty
     if (!comment.isEmpty()) {

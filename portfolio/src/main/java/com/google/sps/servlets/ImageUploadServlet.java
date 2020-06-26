@@ -26,14 +26,12 @@ import javax.servlet.http.HttpServletResponse;
 public class ImageUploadServlet extends HttpServlet {
 
   private static final BlobstoreService BLOBSTORESERVICE = 
-    BlobstoreServiceFactory.getBlobstoreService();
+      BlobstoreServiceFactory.getBlobstoreService();
 
   @Override
   public void doGet(HttpServletRequest request, 
                     HttpServletResponse response) throws IOException {
-    String uploadUrl = BLOBSTORESERVICE.createUploadUrl("/new-data");
-
     response.setContentType("text/html");
-    response.getWriter().println(uploadUrl);
+    response.getWriter().println(BLOBSTORESERVICE.createUploadUrl("/new-data"));
   }
 }

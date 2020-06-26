@@ -59,7 +59,7 @@ final class Message {
 public class ListCommentsServlet extends HttpServlet {
 
   private static final DatastoreService DATASTORE = 
-    DatastoreServiceFactory.getDatastoreService();
+      DatastoreServiceFactory.getDatastoreService();
 
   @Override
   public void doGet(HttpServletRequest request, 
@@ -86,15 +86,13 @@ public class ListCommentsServlet extends HttpServlet {
     ArrayList<Message> messages = new ArrayList<>();
     for (final Entity entity : results.asIterable(
            FetchOptions.Builder.withLimit(commentLimit))) {
-      final long id = entity.getKey().getId();
-      final String name = (String) entity.getProperty("name");
-      final String job = (String) entity.getProperty("job");
-      final String email = (String) entity.getProperty("email");
-      final String comment = (String) entity.getProperty("comment");
-      final String imageUrl = (String) entity.getProperty("imageUrl");
-      final long timestamp = (long) entity.getProperty("timestamp");
- 
-      Message msg = new Message(id, name, job, email, comment, imageUrl, timestamp);
+      Message msg = new Message(entity.getKey().getId(), 
+                                (String) entity.getProperty("name"), 
+                                (String) entity.getProperty("job"), 
+                                (String) entity.getProperty("email"), 
+                                (String) entity.getProperty("comment"), 
+                                (String) entity.getProperty("imageUrl"),
+                                (long) entity.getProperty("timestamp"));
       messages.add(msg);
     }
 

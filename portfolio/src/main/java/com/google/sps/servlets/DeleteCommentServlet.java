@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DeleteCommentServlet extends HttpServlet {
  
   private static final DatastoreService DATASTORE = 
-    DatastoreServiceFactory.getDatastoreService();
+      DatastoreServiceFactory.getDatastoreService();
   
   @Override
   public void doPost(HttpServletRequest request, 
