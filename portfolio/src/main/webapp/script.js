@@ -131,24 +131,6 @@ function fetchBlobstoreUrlAndShowForm() {
     });
 }
 
-// /** Fetches image urls and display images */
-// function loadNewImages() {
-//   fetch('/new-image')
-//     .then((response) => {
-//     return response.json();
-//     })
-//     .then((imageUrls) => {
-//       const statsListElement = document.getElementById('images'); 
-//       statsListElement.innerHTML = '';
-
-//       if (imageUrls) {
-//         imageUrls.forEach((imageUrl) => {
-//         statsListElement.appendChild(createImageElement(imageUrl));
-//         });
-//       }
-//     });
-// }
-
 /** Creates an element that represents an image (clickable). */
 function createImageElement(imageUrl) {
   const referElement = document.createElement('a');
