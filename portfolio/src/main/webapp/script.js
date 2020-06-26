@@ -60,8 +60,8 @@ function loadComments() {
       getComments();
     } else {
       const statsListElement = document.getElementById('msg-container');
-      statsListElement.innerHTML = "<p>Login <a href=\"" + stats + "\">here\
-        </a>to see comments</p>";
+      statsListElement.innerHTML = "<p>Login <a href=\"" + stats + 
+        "\">here</a>to see comments</p>";
     }
   });
 }

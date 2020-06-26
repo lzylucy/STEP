@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginServlet extends HttpServlet {
 
   private static final UserService USERSERVICE = 
-    UserServiceFactory.getUserService();
+      UserServiceFactory.getUserService();
 
   @Override
   public void doGet(HttpServletRequest request, 
@@ -37,8 +37,7 @@ public class LoginServlet extends HttpServlet {
       response.getWriter().println("okay");
     } else {
       // Return Login link if user is not logged in
-      String loginUrl = USERSERVICE.createLoginURL("/index.html");
-      response.getWriter().println(loginUrl);
+      response.getWriter().println(USERSERVICE.createLoginURL("/index.html"));
     }
   }
 }

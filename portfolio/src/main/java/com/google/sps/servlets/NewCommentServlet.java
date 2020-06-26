@@ -31,9 +31,9 @@ import javax.servlet.http.HttpServletResponse;
 public class NewCommentServlet extends HttpServlet {
 
   private static final DatastoreService DATASTORE = 
-    DatastoreServiceFactory.getDatastoreService();
+      DatastoreServiceFactory.getDatastoreService();
   private static final UserService USERSERVICE =
-    UserServiceFactory.getUserService();
+      UserServiceFactory.getUserService();
     
   @Override
   public void doPost(HttpServletRequest request, 
