@@ -103,6 +103,10 @@ function createCommentElement(message) {
   divElement.className = "comment"
   divElement.innerText = message.comment
   commentElement.appendChild(divElement);
+  
+  if (message.imageUrl) {
+    commentElement.appendChild(createImageElement(message.imageUrl));
+  }
 
   return commentElement;
 }
@@ -127,23 +131,23 @@ function fetchBlobstoreUrlAndShowForm() {
     });
 }
 
-/** Fetches image urls and display images */
-function loadNewImages() {
-  fetch('/new-image')
-    .then((response) => {
-    return response.json();
-    })
-    .then((imageUrls) => {
-      const statsListElement = document.getElementById('images'); 
-      statsListElement.innerHTML = '';
+// /** Fetches image urls and display images */
+// function loadNewImages() {
+//   fetch('/new-image')
+//     .then((response) => {
+//     return response.json();
+//     })
+//     .then((imageUrls) => {
+//       const statsListElement = document.getElementById('images'); 
+//       statsListElement.innerHTML = '';
 
-      if (imageUrls) {
-        imageUrls.forEach((imageUrl) => {
-        statsListElement.appendChild(createImageElement(imageUrl));
-        });
-      }
-    });
-}
+//       if (imageUrls) {
+//         imageUrls.forEach((imageUrl) => {
+//         statsListElement.appendChild(createImageElement(imageUrl));
+//         });
+//       }
+//     });
+// }
 
 /** Creates an element that represents an image (clickable). */
 function createImageElement(imageUrl) {
@@ -156,6 +160,6 @@ function createImageElement(imageUrl) {
 }
 
 window.onload = function() {
+  loadComments();
   fetchBlobstoreUrlAndShowForm();
-  loadNewImages();
 }
