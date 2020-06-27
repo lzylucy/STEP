@@ -89,3 +89,7 @@ input[type=submit], button:hover {
 .image-thumbnails img:hover {
   border: solid rgb(17, 206, 0);
 }
+
+.hidden {
+  display: none;
+}
