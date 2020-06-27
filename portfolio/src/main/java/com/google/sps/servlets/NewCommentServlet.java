@@ -66,10 +66,15 @@ public class NewCommentServlet extends HttpServlet {
     final long timestamp = System.currentTimeMillis();
     
     BlobKey blobKey = getBlobKey(request, "image");
-    // Get uploaded file url if user uploaded a file
-    // Otherwise, make imageUrl empty
+    // Get uploaded file url if user uploaded an image file
+    // Otherwise, keep imageUrl empty
     if (blobKey != null) {
-      imageUrl = getUploadedFileUrl(blobKey);
+      try {
+        imageUrl = getUploadedFileUrl(blobKey);
+      } catch (IllegalArgumentException e) {
+        imageUrl = "";
+        System.err.println("Please upload an image file");
+      }
     }
 
     // Store the information if comment is non-empty
