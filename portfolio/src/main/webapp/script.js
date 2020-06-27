@@ -111,6 +111,16 @@ function createCommentElement(message) {
   return commentElement;
 }
 
+/** Creates an element that represents a clickable image. */
+function createImageElement(imageUrl) {
+  const referElement = document.createElement('a');
+  referElement.href = imageUrl;
+  const imageElement = document.createElement('img');
+  imageElement.src = imageUrl;
+  referElement.appendChild(imageElement);
+  return referElement;
+}
+
 /** Tells the server to delete all comments. */
 function deleteAllComments() {
   fetch('/delete-data', {method: 'POST'}).then(() => {
@@ -129,16 +139,6 @@ function fetchBlobstoreUrlAndShowForm() {
     messageForm.action = imageUploadUrl;
     messageForm.classList.remove('hidden');
     });
-}
-
-/** Creates an element that represents an image (clickable). */
-function createImageElement(imageUrl) {
-  const referElement = document.createElement('a');
-  referElement.href = imageUrl;
-  const imageElement = document.createElement('img');
-  imageElement.src = imageUrl;
-  referElement.appendChild(imageElement);
-  return referElement;
 }
 
 window.onload = function() {

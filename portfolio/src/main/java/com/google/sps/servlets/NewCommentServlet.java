@@ -67,7 +67,7 @@ public class NewCommentServlet extends HttpServlet {
     
     BlobKey blobKey = getBlobKey(request, "image");
     // Get uploaded file url if user uploaded a file
-    // Otherwise, make the imageUrl empty
+    // Otherwise, make imageUrl empty
     if (blobKey != null) {
       imageUrl = getUploadedFileUrl(blobKey);
     }
@@ -108,8 +108,7 @@ public class NewCommentServlet extends HttpServlet {
    * upload a file.
    */
   private BlobKey getBlobKey(HttpServletRequest request, String name) {
-    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    Map<String, List<BlobKey>> blobs = BLOBSTORESERVICE.getUploads(request);
     List<BlobKey> blobKeys = blobs.get(name);
 
     // User submitted form without selecting a file, so we can't get a BlobKey. (dev server)
@@ -123,7 +122,7 @@ public class NewCommentServlet extends HttpServlet {
     // User submitted form without selecting a file, so the BlobKey is empty. (live server)
     BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
     if (blobInfo.getSize() == 0) {
-      blobstoreService.delete(blobKey);
+      BLOBSTORESERVICE.delete(blobKey);
       return null;
     }
 
