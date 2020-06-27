@@ -57,6 +57,10 @@ public class NewCommentServlet extends HttpServlet {
     // Retrieve information from the form and add timestamp
     final String name = Utilities.getParameterWithDefault(
       request, "user-name", "Anonymous");
+    final String latitude = Utilities.getParameterWithDefault(
+      request, "lat", "unknown");
+    final String longitude = Utilities.getParameterWithDefault(
+      request, "long", "unknown");
     final String job = Utilities.getParameterWithDefault(
       request, "jobs", "Other");
     final String email = USERSERVICE.getCurrentUser().getEmail();
@@ -81,6 +85,8 @@ public class NewCommentServlet extends HttpServlet {
     if (!comment.isEmpty()) {
       Entity messageEntity = new Entity("Message");
       messageEntity.setProperty("name", name);
+      messageEntity.setProperty("lat", latitude);
+      messageEntity.setProperty("long", longitude);
       messageEntity.setProperty("job", job);
       messageEntity.setProperty("email", email);
       messageEntity.setProperty("comment", comment);

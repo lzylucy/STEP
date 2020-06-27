@@ -34,9 +34,12 @@ import java.util.ArrayList;
 /** An item containing visitor information and comment. */
 final class Message {
     
-  public Message(long id, String name, String job, String email, 
-                 String comment, String imageUrl, long timestamp) {
+  public Message(long id, String latitude, String longitude, String name, 
+                 String job, String email, String comment, String imageUrl, 
+                 long timestamp) {
     this.id = id;
+    this.latitude = latitude;
+    this.longitude = longitude;
     this.name = name;
     this.job = job;
     this.email = email;
@@ -46,6 +49,8 @@ final class Message {
   }
 
   private final long id;
+  private final String latitude;
+  private final String longitude;
   private final String name;
   private final String job;
   private final String email;
@@ -88,6 +93,8 @@ public class ListCommentsServlet extends HttpServlet {
            FetchOptions.Builder.withLimit(commentLimit))) {
       Message msg = new Message(entity.getKey().getId(), 
                                 (String) entity.getProperty("name"), 
+                                (String) entity.getProperty("lat"),
+                                (String) entity.getProperty("long"),
                                 (String) entity.getProperty("job"), 
                                 (String) entity.getProperty("email"), 
                                 (String) entity.getProperty("comment"), 
