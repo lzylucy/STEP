@@ -85,10 +85,14 @@
 
       <div id="form-container">
         <form id="my-form" class="hidden" method="POST" 
-              enctype="multipart/form-data">
+              enctype="multipart/form-data" novalidate>
 
           <label for="user-name">Your Name:</label>
           <input type="text" name="user-name"><br><br>
+
+          <!-- These entries are hidden from user -->
+          <input type="number" class="hidden" id="lat" name="lat">
+          <input type="number" class="hidden" id="long" name="long">
 
           <label for="jobs">Your Profession:</label>
           <select name="jobs" id="jobs"> 
@@ -105,7 +109,7 @@
           <input type="file" name="image">
           <br><br>
 
-          <input type="submit" /> 
+          <input type="submit" />
         </form>
       </div>
       
