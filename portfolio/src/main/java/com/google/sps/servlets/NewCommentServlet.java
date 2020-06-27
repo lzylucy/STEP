@@ -89,7 +89,6 @@ public class NewCommentServlet extends HttpServlet {
       DATASTORE.put(messageEntity);
     }
 
-    // Redirect back to the HTML page.
     response.sendRedirect("/index.html");
   }
 
