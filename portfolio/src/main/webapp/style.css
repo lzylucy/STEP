@@ -96,6 +96,6 @@ input[type=submit], button:hover {
 
 #map {
   border: thin solid black;
-  height: 100%;
-  width: 100%;
+  height: 700px;
+  width: 1200px;
 }
