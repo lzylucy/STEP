@@ -87,7 +87,7 @@ function getComments() {
 
       if (stats) {
         stats.forEach((message) => {
-        statsListElement.appendChild(createCommentElement(message));
+          statsListElement.appendChild(createCommentElement(message));
         });
       }
   });

@@ -34,7 +34,7 @@ import java.util.ArrayList;
 /** An item containing visitor information and comment. */
 final class Message {
     
-  public Message(long id, String latitude, String longitude, String name, 
+  public Message(long id, String name, String latitude, String longitude,
                  String job, String email, String comment, String imageUrl, 
                  long timestamp) {
     this.id = id;
