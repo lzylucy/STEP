@@ -50,6 +50,7 @@ public class NewCommentServlet extends HttpServlet {
       BlobstoreServiceFactory.getBlobstoreService();
   private static final ImagesService IMAGESSERVICE = 
       ImagesServiceFactory.getImagesService();
+  private static final BlobInfoFactory BLOBINFOFACTORY = new BlobInfoFactory();
     
   @Override
   public void doPost(HttpServletRequest request, 
@@ -131,7 +132,7 @@ public class NewCommentServlet extends HttpServlet {
     BlobKey blobKey = blobKeys.get(0);
 
     // User submitted form without selecting a file, so the BlobKey is empty. (live server)
-    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
+    BlobInfo blobInfo = BLOBINFOFACTORY.loadBlobInfo(blobKey);
     if (blobInfo.getSize() == 0) {
       BLOBSTORESERVICE.delete(blobKey);
       return null;
