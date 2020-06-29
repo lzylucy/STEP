@@ -61,7 +61,7 @@ function loadComments() {
     } else {
       const statsListElement = document.getElementById('msg-container');
       statsListElement.innerHTML = "<p>Login <a href=\"" + stats + 
-        "\">here</a>to see comments</p>";
+        "\">here</a> to see comments</p>";
     }
   });
 }
@@ -103,8 +103,22 @@ function createCommentElement(message) {
   divElement.className = "comment"
   divElement.innerText = message.comment
   commentElement.appendChild(divElement);
+  
+  if (message.imageUrl) {
+    commentElement.appendChild(createImageElement(message.imageUrl));
+  }
 
   return commentElement;
+}
+
+/** Creates an element that represents a clickable image. */
+function createImageElement(imageUrl) {
+  const referElement = document.createElement('a');
+  referElement.href = imageUrl;
+  const imageElement = document.createElement('img');
+  imageElement.src = imageUrl;
+  referElement.appendChild(imageElement);
+  return referElement;
 }
 
 /** Tells the server to delete all comments. */
@@ -112,4 +126,22 @@ function deleteAllComments() {
   fetch('/delete-data', {method: 'POST'}).then(() => {
     loadComments();
   });
+}
+
+/** Fetches blobstore url and then shows form  */
+function fetchBlobstoreUrlAndShowForm() {
+  fetch('/blobstore-image-upload')
+    .then((response) => {
+    return response.text();
+    })
+    .then((imageUploadUrl) => {
+    const messageForm = document.getElementById('my-form');
+    messageForm.action = imageUploadUrl;
+    messageForm.classList.remove('hidden');
+    });
+}
+
+window.onload = function() {
+  loadComments();
+  fetchBlobstoreUrlAndShowForm();
 }

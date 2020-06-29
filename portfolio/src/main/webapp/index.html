@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body onload="loadComments()">
+  <body>
     <div id="content">
       <h1>Welcome to Sunflower's Homepage</h1>
 
@@ -84,7 +84,8 @@
              value="3" onchange="loadComments()">
 
       <div id="form-container">
-        <form action="/new-data" method="POST">
+        <form id="my-form" class="hidden" method="POST" 
+              enctype="multipart/form-data">
 
           <label for="user-name">Your Name:</label>
           <input type="text" name="user-name"><br><br>
@@ -99,6 +100,9 @@
 
           <p>Feel free to leave a comment here:</p>
           <textarea id="visitor-comment" name="visitor-comment"></textarea>
+          
+          <p>Upload an image:</p>
+          <input type="file" name="image">
           <br><br>
 
           <input type="submit" /> 

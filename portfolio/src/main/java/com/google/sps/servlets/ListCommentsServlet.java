@@ -33,12 +33,13 @@ import java.util.ArrayList;
 final class Message {
     
   public Message(long id, String name, String job, String email, 
-                 String comment, long timestamp) {
+                 String comment, String imageUrl, long timestamp) {
     this.id = id;
     this.name = name;
     this.job = job;
     this.email = email;
     this.comment = comment;
+    this.imageUrl = imageUrl;
     this.timestamp = timestamp;
   }
 
@@ -47,6 +48,7 @@ final class Message {
   private final String job;
   private final String email;
   private final String comment;
+  private final String imageUrl;
   private final long timestamp;
 }
 
@@ -87,6 +89,7 @@ public class ListCommentsServlet extends HttpServlet {
                                 (String) entity.getProperty("job"), 
                                 (String) entity.getProperty("email"), 
                                 (String) entity.getProperty("comment"), 
+                                (String) entity.getProperty("imageUrl"),
                                 (long) entity.getProperty("timestamp"));
       messages.add(msg);
     }
