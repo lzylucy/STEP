@@ -32,18 +32,23 @@ import java.util.ArrayList;
 /** An item containing visitor information and comment. */
 final class Message {
     
-  public Message(long id, String name, String job, String comment, long timestamp) {
+  public Message(long id, String name, String job, String email, 
+                 String comment, String imageUrl, long timestamp) {
     this.id = id;
     this.name = name;
     this.job = job;
+    this.email = email;
     this.comment = comment;
+    this.imageUrl = imageUrl;
     this.timestamp = timestamp;
   }
 
   private final long id;
   private final String name;
   private final String job;
+  private final String email;
   private final String comment;
+  private final String imageUrl;
   private final long timestamp;
 }
 
@@ -52,8 +57,8 @@ final class Message {
 public class ListCommentsServlet extends HttpServlet {
 
   private static final DatastoreService DATASTORE = 
-    DatastoreServiceFactory.getDatastoreService();
-  
+      DatastoreServiceFactory.getDatastoreService();
+
   @Override
   public void doGet(HttpServletRequest request, 
                     HttpServletResponse response) throws IOException {
@@ -79,13 +84,13 @@ public class ListCommentsServlet extends HttpServlet {
     ArrayList<Message> messages = new ArrayList<>();
     for (final Entity entity : results.asIterable(
            FetchOptions.Builder.withLimit(commentLimit))) {
-      long id = entity.getKey().getId();
-      String name = (String) entity.getProperty("name");
-      String job = (String) entity.getProperty("job");
-      String comment = (String) entity.getProperty("comment");
-      long timestamp = (long) entity.getProperty("timestamp");
- 
-      Message msg = new Message(id, name, job, comment, timestamp);
+      Message msg = new Message(entity.getKey().getId(), 
+                                (String) entity.getProperty("name"), 
+                                (String) entity.getProperty("job"), 
+                                (String) entity.getProperty("email"), 
+                                (String) entity.getProperty("comment"), 
+                                (String) entity.getProperty("imageUrl"),
+                                (long) entity.getProperty("timestamp"));
       messages.add(msg);
     }
 

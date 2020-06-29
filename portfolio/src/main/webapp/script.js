@@ -51,9 +51,25 @@ function addRandomFunFact() {
 }
 
 /**
- * Fetches comments from DataServlet and adds them to the page
+ * Checks user authentication. 
+ * If logged in, displays comments; if not, displays login link
  */
 function loadComments() {
+  fetch('/login').then(response => response.text()).then(stats => {
+    if (stats.trim() === "okay") {
+      getComments();
+    } else {
+      const statsListElement = document.getElementById('msg-container');
+      statsListElement.innerHTML = "<p>Login <a href=\"" + stats + 
+        "\">here</a> to see comments</p>";
+    }
+  });
+}
+
+/**
+ * Fetches comments from DataServlet and adds them to the page
+ */
+function getComments() {
   const limit = document.getElementById('limit').value;
 
   // Pop up an alert window if input is invalid
@@ -68,7 +84,7 @@ function loadComments() {
     .then((stats) => {
       const statsListElement = document.getElementById('msg-container');
       statsListElement.innerHTML = '';
-      
+
       if (stats) {
         stats.forEach((message) => {
         statsListElement.appendChild(createCommentElement(message));
@@ -80,14 +96,29 @@ function loadComments() {
 /** Creates an element that represents a comment. */
 function createCommentElement(message) {
   const commentElement = document.createElement('li');
-  commentElement.innerText = message.name + "--" + message.job;
+  commentElement.innerText = message.name + "--" + message.job 
+                                          + "--" + message.email;
 
   const divElement = document.createElement('div')
   divElement.className = "comment"
   divElement.innerText = message.comment
   commentElement.appendChild(divElement);
+  
+  if (message.imageUrl) {
+    commentElement.appendChild(createImageElement(message.imageUrl));
+  }
 
   return commentElement;
+}
+
+/** Creates an element that represents a clickable image. */
+function createImageElement(imageUrl) {
+  const referElement = document.createElement('a');
+  referElement.href = imageUrl;
+  const imageElement = document.createElement('img');
+  imageElement.src = imageUrl;
+  referElement.appendChild(imageElement);
+  return referElement;
 }
 
 /** Tells the server to delete all comments. */
@@ -95,4 +126,22 @@ function deleteAllComments() {
   fetch('/delete-data', {method: 'POST'}).then(() => {
     loadComments();
   });
+}
+
+/** Fetches blobstore url and then shows form  */
+function fetchBlobstoreUrlAndShowForm() {
+  fetch('/blobstore-image-upload')
+    .then((response) => {
+    return response.text();
+    })
+    .then((imageUploadUrl) => {
+    const messageForm = document.getElementById('my-form');
+    messageForm.action = imageUploadUrl;
+    messageForm.classList.remove('hidden');
+    });
+}
+
+window.onload = function() {
+  loadComments();
+  fetchBlobstoreUrlAndShowForm();
 }
