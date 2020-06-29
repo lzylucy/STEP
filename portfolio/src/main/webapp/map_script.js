@@ -2,7 +2,7 @@
 function initMap() {
   const map = new google.maps.Map(
       document.getElementById('map'),
-      {center: {lat: 39.92, lng: 116.38}, zoom: 4});
+      {center: {lat: 39.92, lng: 116.38}, zoom: 6});
   
   addMarkersAndInfoWindows(map);
 }
@@ -32,7 +32,7 @@ function addMarkersAndInfoWindows(map) {
   });
 }
 
-/** Creates an element that represents a comment. */
+/** Creates an element that represents a comment (without image). */
 function createCommentElement(message) {
   const commentElement = document.createElement('li');
   commentElement.innerText = message.name + "--" + message.job 
