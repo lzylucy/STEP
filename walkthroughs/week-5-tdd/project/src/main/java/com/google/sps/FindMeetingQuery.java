@@ -21,14 +21,37 @@ public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     Collection<TimeRange> result = new ArrayList<>();
     for (String attendee: request.getAttendees()) {
-      Collection<TimeRange> availability = getAvailability(attendee);
-      merge(result, availability);
+      Collection<TimeRange> meetingTimes = getMeetingTimes(events, attendee);
+      merge(result, meetingTimes);
     }
 
     return result;
   }
 
-  private Collection<TimeRange> getAvailability(String attendee) {
+  private void merge(Collection<TimeRange> result, Collection<TimeRange> other) {
+    // If result is empty, add other to the result directly
+    // If result is not empty, need to merge the two, keep the overlapping ranges
     
+
+  }
+
+  private Collection<TimeRange> getMeetingTimes(Collection<Event> events, String attendee) {
+    // Get attendee's unavailable time ranges
+    // Assume required meetings for one person do not overlap
+    Collection<TimeRange> meetingTimes = new ArrayList<>();
+    for (Event e: events) {
+      if (e.getAttendees().contains(attendee)) {
+        meetingTimes.add(e.getWhen());
+      }
+    }
+    // Collection<TimeRange> availability = new ArrayList<>();
+    // int point = TimeRange.START_OF_DAY;
+    // for (TimeRange t: meetingTime) {
+    //   availability.add(TimeRange.fromStartEnd(point, t.start(), false));
+    //   point = t.end();
+    // }
+    // availability.add(TimeRange.fromStartEnd(point, TimeRange.END_OF_DAY));
+
+    return meetingTimes;
   }
 }
