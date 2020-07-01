@@ -28,11 +28,11 @@ public final class FindMeetingQuery {
     ArrayList<TimeRange> unavailable = new ArrayList<>();
     for (String attendee : request.getAttendees()) {
       ArrayList<TimeRange> meetingTimes = getMeetingTimes(events, attendee);
-      unavailable = merge(unavailable, meetingTimes);
+      merge(unavailable, meetingTimes);
     }
 
     // Get time ranges that are longer than the requested meeting duration
-    Collection<TimeRange> result = getSortedAvailability(unavailable);
+    Collection<TimeRange> result = getAvailability(unavailable);
     result.removeIf( 
       timeRange -> timeRange.duration() < request.getDuration());
 
@@ -42,15 +42,18 @@ public final class FindMeetingQuery {
   /**
    * Adds the unavailable time ranges of a new attendee to the cumulative
    * unavailable time ranges.
-   * Resolves conflicts by merging overlapping ranges into new ranges
+   * Resolves conflicts by merging overlapping ranges into new ranges.
+   *
+   * @param result Cumulative unavailable time ranges
+   * @param other Unavailable time ranges of a new attendee
    */
-  private ArrayList<TimeRange> merge(ArrayList<TimeRange> result, 
-                                     ArrayList<TimeRange> other) {
+  private void merge(ArrayList<TimeRange> result, ArrayList<TimeRange> other) {
     if (result.isEmpty()) {
-      return other;
+      result.addAll(other);
+      return;
     }
     if (other.isEmpty()) {
-      return result;
+      return;
     }
 
     result.addAll(other);
@@ -76,8 +79,6 @@ public final class FindMeetingQuery {
         }
       }
     }
-    
-    return result;
   }
 
   /** Gets an attendee's unavailable time ranges */
@@ -99,8 +100,7 @@ public final class FindMeetingQuery {
    * @return Attendees' available time ranges sorted by start time in 
    *         ascending order
    */
-  private Collection<TimeRange> getSortedAvailability(Collection<TimeRange> 
-                                                        sortedUnavailable) {
+  private Collection<TimeRange> getAvailability(Collection<TimeRange> sortedUnavailable) {
     Collection<TimeRange> availability = new ArrayList<>();
     int point = TimeRange.START_OF_DAY;
     for (TimeRange t : sortedUnavailable) {
