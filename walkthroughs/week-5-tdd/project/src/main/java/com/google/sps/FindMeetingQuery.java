@@ -103,7 +103,7 @@ public final class FindMeetingQuery {
                                                         sortedUnavailable) {
     Collection<TimeRange> availability = new ArrayList<>();
     int point = TimeRange.START_OF_DAY;
-    for (TimeRange t : unavailable) {
+    for (TimeRange t : sortedUnavailable) {
       availability.add(TimeRange.fromStartEnd(point, t.start(), false));
       point = t.end();
     }
