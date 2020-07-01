@@ -24,22 +24,53 @@ import java.util.Collections;
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, 
                                       MeetingRequest request) {
-    // Get unavailable time for all required attendees in meeting request
     ArrayList<TimeRange> unavailable = new ArrayList<>();
+    Collection<TimeRange> result = new ArrayList<>();
+
+    // Get unavailable time for all required attendees in meeting request
     for (String attendee: request.getAttendees()) {
       ArrayList<TimeRange> meetingTimes = getMeetingTimes(events, attendee);
       unavailable = merge(unavailable, meetingTimes);
     }
 
-    Collection<TimeRange> result = new ArrayList<>();
+    // Get time ranges that are longer than the requested meeting duration
+    // for required attendees
     for (TimeRange t: getAvailability(unavailable)) {
-      // Get time ranges that are longer than the requested meeting duration
       if (t.duration() >= request.getDuration()) {
         result.add(t);
       }
     }
 
-    return result;
+    // Consider optional attendees
+    ArrayList<TimeRange> unavailableWithOptional = new ArrayList<>();
+    Collection<TimeRange> resultWithOptional = new ArrayList<>();
+    unavailableWithOptional.addAll(unavailable);
+
+    if (!request.getOptionalAttendees().isEmpty()) {
+      // Merge unavailable time for all optional attendees in meeting request
+      for (String attendee: request.getOptionalAttendees()) {
+        ArrayList<TimeRange> meetingTimes = getMeetingTimes(events, attendee);
+        unavailableWithOptional = merge(unavailableWithOptional, meetingTimes);
+      }
+
+      // Get time ranges that are longer than the requested meeting duration
+      // for all attendees
+      for (TimeRange t: getAvailability(unavailableWithOptional)) {
+        if (t.duration() >= request.getDuration()) {
+          resultWithOptional.add(t);
+        }
+      }
+    } else {
+      // If there are no optional attendees, result does not change
+      resultWithOptional.addAll(result);
+    }
+
+    // If there are no mandatory attendees, treat optional as mandatory
+    if (request.getAttendees().isEmpty()) {
+      return resultWithOptional;
+    }
+
+    return ((resultWithOptional.isEmpty()) ? result : resultWithOptional);
   }
 
   private ArrayList<TimeRange> merge(ArrayList<TimeRange> result, 
