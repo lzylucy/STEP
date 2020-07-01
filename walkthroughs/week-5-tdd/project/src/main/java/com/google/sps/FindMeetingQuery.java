@@ -28,7 +28,7 @@ public final class FindMeetingQuery {
     ArrayList<TimeRange> unavailable = new ArrayList<>();
     for (String attendee : request.getAttendees()) {
       ArrayList<TimeRange> meetingTimes = getMeetingTimes(events, attendee);
-      merge(unavailable, meetingTimes);
+      mergeTo(unavailable, meetingTimes);
     }
 
     // Get time ranges that are longer than the requested meeting duration
@@ -47,7 +47,7 @@ public final class FindMeetingQuery {
    * @param result Cumulative unavailable time ranges
    * @param other Unavailable time ranges of a new attendee
    */
-  private void merge(ArrayList<TimeRange> result, ArrayList<TimeRange> other) {
+  private void mergeTo(ArrayList<TimeRange> result, ArrayList<TimeRange> other) {
     if (result.isEmpty()) {
       result.addAll(other);
       return;
@@ -69,6 +69,7 @@ public final class FindMeetingQuery {
           // Case 1:  |_______|
           //            |__|
           result.remove(next);
+          i--;
         } else {
           // Case 2:  |______|
           //               |______|
