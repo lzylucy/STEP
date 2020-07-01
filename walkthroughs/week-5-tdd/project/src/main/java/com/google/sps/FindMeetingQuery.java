@@ -25,12 +25,11 @@ public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, 
                                      MeetingRequest request) {
     ArrayList<TimeRange> unavailable = new ArrayList<>();
-    Collection<TimeRange> result = new ArrayList<>();
 
     // Get unavailable time for all required attendees in meeting request
     for (String attendee : request.getAttendees()) {
       ArrayList<TimeRange> meetingTimes = getMeetingTimes(events, attendee);
-      merge(unavailable, meetingTimes);
+      mergeTo(unavailable, meetingTimes);
     }
 
     // Get time ranges that are longer than the requested meeting duration
@@ -48,13 +47,12 @@ public final class FindMeetingQuery {
       // Merge unavailable time for all optional attendees in meeting request
       for (String attendee : request.getOptionalAttendees()) {
         ArrayList<TimeRange> meetingTimes = getMeetingTimes(events, attendee);
-        merge(unavailableWithOptional, meetingTimes);
+        mergeTo(unavailableWithOptional, meetingTimes);
       }
 
       // Get time ranges that are longer than the requested meeting duration
       // for all attendees
-      Collection<TimeRange> resultWithOptional = 
-        getAvailability(unavailableWithOptional);
+      resultWithOptional = getAvailability(unavailableWithOptional);
       resultWithOptional.removeIf( 
         timeRange -> timeRange.duration() < request.getDuration());
     } else {
@@ -78,7 +76,7 @@ public final class FindMeetingQuery {
    * @param result Cumulative unavailable time ranges
    * @param other Unavailable time ranges of a new attendee
    */
-  private void merge(ArrayList<TimeRange> result, ArrayList<TimeRange> other) {
+  private void mergeTo(ArrayList<TimeRange> result, ArrayList<TimeRange> other) {
     if (result.isEmpty()) {
       result.addAll(other);
       return;
@@ -100,6 +98,7 @@ public final class FindMeetingQuery {
           // Case 1:  |_______|
           //            |__|
           result.remove(next);
+          i--;
         } else {
           // Case 2:  |______|
           //               |______|
