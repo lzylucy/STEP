@@ -23,23 +23,21 @@ import java.util.Collections;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, 
-                                      MeetingRequest request) {
+                                     MeetingRequest request) {
     ArrayList<TimeRange> unavailable = new ArrayList<>();
     Collection<TimeRange> result = new ArrayList<>();
 
     // Get unavailable time for all required attendees in meeting request
-    for (String attendee: request.getAttendees()) {
+    for (String attendee : request.getAttendees()) {
       ArrayList<TimeRange> meetingTimes = getMeetingTimes(events, attendee);
-      unavailable = merge(unavailable, meetingTimes);
+      merge(unavailable, meetingTimes);
     }
 
     // Get time ranges that are longer than the requested meeting duration
     // for required attendees
-    for (TimeRange t: getAvailability(unavailable)) {
-      if (t.duration() >= request.getDuration()) {
-        result.add(t);
-      }
-    }
+    Collection<TimeRange> result = getAvailability(unavailable);
+    result.removeIf( 
+      timeRange -> timeRange.duration() < request.getDuration());
 
     // Consider optional attendees
     ArrayList<TimeRange> unavailableWithOptional = new ArrayList<>();
@@ -48,18 +46,17 @@ public final class FindMeetingQuery {
 
     if (!request.getOptionalAttendees().isEmpty()) {
       // Merge unavailable time for all optional attendees in meeting request
-      for (String attendee: request.getOptionalAttendees()) {
+      for (String attendee : request.getOptionalAttendees()) {
         ArrayList<TimeRange> meetingTimes = getMeetingTimes(events, attendee);
-        unavailableWithOptional = merge(unavailableWithOptional, meetingTimes);
+        merge(unavailableWithOptional, meetingTimes);
       }
 
       // Get time ranges that are longer than the requested meeting duration
       // for all attendees
-      for (TimeRange t: getAvailability(unavailableWithOptional)) {
-        if (t.duration() >= request.getDuration()) {
-          resultWithOptional.add(t);
-        }
-      }
+      Collection<TimeRange> resultWithOptional = 
+        getAvailability(unavailableWithOptional);
+      resultWithOptional.removeIf( 
+        timeRange -> timeRange.duration() < request.getDuration());
     } else {
       // If there are no optional attendees, result does not change
       resultWithOptional.addAll(result);
@@ -73,13 +70,21 @@ public final class FindMeetingQuery {
     return ((resultWithOptional.isEmpty()) ? result : resultWithOptional);
   }
 
-  private ArrayList<TimeRange> merge(ArrayList<TimeRange> result, 
-                                      ArrayList<TimeRange> other) {
+  /**
+   * Adds the unavailable time ranges of a new attendee to the cumulative
+   * unavailable time ranges.
+   * Resolves conflicts by merging overlapping ranges into new ranges.
+   *
+   * @param result Cumulative unavailable time ranges
+   * @param other Unavailable time ranges of a new attendee
+   */
+  private void merge(ArrayList<TimeRange> result, ArrayList<TimeRange> other) {
     if (result.isEmpty()) {
-      return other;
+      result.addAll(other);
+      return;
     }
     if (other.isEmpty()) {
-      return result;
+      return;
     }
 
     result.addAll(other);
@@ -91,34 +96,27 @@ public final class FindMeetingQuery {
       TimeRange next = result.get(i+1);
 
       if (current.overlaps(next)) {
-        // Case 1:  |_______|
-        //            |__|
         if (current.contains(next)) {
+          // Case 1:  |_______|
+          //            |__|
           result.remove(next);
-          i--;
-        }
-        // Case 2:  |______|
-        //               |______|
-        else {
+        } else {
+          // Case 2:  |______|
+          //               |______|
           result.set(i, TimeRange.fromStartEnd(current.start(), 
-                                                next.end(), false));
+                                               next.end(), false));
           result.remove(next);
           i--;
         }
       }
     }
-    
-    return result;
   }
 
-  /**
-   * Gets an attendee's unavailable time ranges
-   * Assume required meetings for one person do not overlap
-   */
+  /** Gets an attendee's unavailable time ranges */
   private ArrayList<TimeRange> getMeetingTimes(Collection<Event> events, 
-                                                String attendee) {
+                                               String attendee) {
     ArrayList<TimeRange> meetingTimes = new ArrayList<>();
-    for (Event e: events) {
+    for (Event e : events) {
       if (e.getAttendees().contains(attendee)) {
         meetingTimes.add(e.getWhen());
       }
@@ -128,12 +126,15 @@ public final class FindMeetingQuery {
   }
 
   /**
-   * Returns attendee's available time ranges given unavailable time ranges
+   * @param sortedUnavailable Attendees' unavailable time ranges sorted 
+   *                          by start time in ascending order
+   * @return Attendees' available time ranges sorted by start time in 
+   *         ascending order
    */
-  private Collection<TimeRange> getAvailability(Collection<TimeRange> unavailable) {
+  private Collection<TimeRange> getAvailability(Collection<TimeRange> sortedUnavailable) {
     Collection<TimeRange> availability = new ArrayList<>();
     int point = TimeRange.START_OF_DAY;
-    for (TimeRange t: unavailable) {
+    for (TimeRange t : sortedUnavailable) {
       availability.add(TimeRange.fromStartEnd(point, t.start(), false));
       point = t.end();
     }
