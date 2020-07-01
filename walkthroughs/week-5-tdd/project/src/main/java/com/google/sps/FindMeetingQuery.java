@@ -22,7 +22,9 @@ import java.util.Collection;
 import java.util.Collections;
 
 public final class FindMeetingQuery {
-  public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
+  public Collection<TimeRange> query(Collection<Event> events, 
+                                      MeetingRequest request) {
+    // Get unavailable time for all required attendees in meeting request
     ArrayList<TimeRange> unavailable = new ArrayList<>();
     for (String attendee: request.getAttendees()) {
       ArrayList<TimeRange> meetingTimes = getMeetingTimes(events, attendee);
@@ -31,6 +33,7 @@ public final class FindMeetingQuery {
 
     Collection<TimeRange> result = new ArrayList<>();
     for (TimeRange t: getAvailability(unavailable)) {
+      // Get time ranges that are longer than the requested meeting duration
       if (t.duration() >= request.getDuration()) {
         result.add(t);
       }
@@ -39,10 +42,8 @@ public final class FindMeetingQuery {
     return result;
   }
 
-  private ArrayList<TimeRange> merge(ArrayList<TimeRange> result, ArrayList<TimeRange> other) {
-    // If result is empty, add other to the result directly
-    // If other is empty, do nothing and return result
-    // If result is not empty, need to merge the two, keep the overlapping ranges
+  private ArrayList<TimeRange> merge(ArrayList<TimeRange> result, 
+                                      ArrayList<TimeRange> other) {
     if (result.isEmpty()) {
       return other;
     }
@@ -53,9 +54,11 @@ public final class FindMeetingQuery {
     result.addAll(other);
     Collections.sort(result, TimeRange.ORDER_BY_START);
 
+    // Merge overlapping ranges
     for (int i = 0; i < result.size()-1; i++) {
       TimeRange current = result.get(i);
       TimeRange next = result.get(i+1);
+
       if (current.overlaps(next)) {
         // Case 1:  |_______|
         //            |__|
@@ -66,7 +69,8 @@ public final class FindMeetingQuery {
         // Case 2:  |______|
         //               |______|
         else {
-          result.set(i, TimeRange.fromStartEnd(current.start(), next.end(), false));
+          result.set(i, TimeRange.fromStartEnd(current.start(), 
+                                                next.end(), false));
           result.remove(next);
           i--;
         }
@@ -76,9 +80,12 @@ public final class FindMeetingQuery {
     return result;
   }
 
-  private ArrayList<TimeRange> getMeetingTimes(Collection<Event> events, String attendee) {
-    // Get attendee's unavailable time ranges
-    // Assume required meetings for one person do not overlap
+  /**
+   * Gets an attendee's unavailable time ranges
+   * Assume required meetings for one person do not overlap
+   */
+  private ArrayList<TimeRange> getMeetingTimes(Collection<Event> events, 
+                                                String attendee) {
     ArrayList<TimeRange> meetingTimes = new ArrayList<>();
     for (Event e: events) {
       if (e.getAttendees().contains(attendee)) {
@@ -89,6 +96,9 @@ public final class FindMeetingQuery {
     return meetingTimes;
   }
 
+  /**
+   * Returns attendee's available time ranges given unavailable time ranges
+   */
   private Collection<TimeRange> getAvailability(Collection<TimeRange> unavailable) {
     Collection<TimeRange> availability = new ArrayList<>();
     int point = TimeRange.START_OF_DAY;
