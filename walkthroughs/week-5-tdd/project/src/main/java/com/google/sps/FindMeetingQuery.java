@@ -20,23 +20,51 @@ import com.google.sps.MeetingRequest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.lang.Math;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, 
                                      MeetingRequest request) {
-    // Get unavailable time for all required attendees in meeting request
     ArrayList<TimeRange> unavailable = new ArrayList<>();
+
+    // Get unavailable time for all required attendees in meeting request
     for (String attendee : request.getAttendees()) {
-      ArrayList<TimeRange> meetingTimes = getMeetingTimes(events, attendee);
-      mergeTo(unavailable, meetingTimes);
+      mergeTo(unavailable, getMeetingTimes(events, attendee));
     }
 
     // Get time ranges that are longer than the requested meeting duration
+    // for required attendees
     Collection<TimeRange> result = getAvailability(unavailable);
     result.removeIf( 
-      timeRange -> timeRange.duration() < request.getDuration());
+        timeRange -> timeRange.duration() < request.getDuration());
 
-    return result;
+    // Consider optional attendees
+    Collection<TimeRange> resultWithOptional = new ArrayList<>();
+
+    if (!request.getOptionalAttendees().isEmpty()) {
+      ArrayList<TimeRange> unavailableWithOptional = 
+          new ArrayList<TimeRange>(unavailable);
+      // Merge unavailable time for all optional attendees in meeting request
+      for (String attendee : request.getOptionalAttendees()) {
+        mergeTo(unavailableWithOptional, getMeetingTimes(events, attendee));
+      }
+
+      // Get time ranges that are longer than the requested meeting duration
+      // for all attendees
+      resultWithOptional = getAvailability(unavailableWithOptional);
+      resultWithOptional.removeIf( 
+          timeRange -> timeRange.duration() < request.getDuration());
+    } else {
+      // If there are no optional attendees, return result directly
+      return result;
+    }
+
+    // If there are no mandatory attendees, treat optional as mandatory
+    if (request.getAttendees().isEmpty()) {
+      return resultWithOptional;
+    }
+
+    return resultWithOptional.isEmpty() ? result : resultWithOptional;
   }
 
   /**
@@ -61,20 +89,16 @@ public final class FindMeetingQuery {
 
     // Merge overlapping ranges
     for (int i = 0; i < result.size()-1; i++) {
-      TimeRange current = result.get(i);
-      TimeRange next = result.get(i+1);
+      TimeRange current = result.get(i), next = result.get(i+1);
 
       if (current.overlaps(next)) {
         if (current.contains(next)) {
           // Case 1:  |_______|
           //            |__|
-          result.remove(next);
-          i--;
-        } else {
           // Case 2:  |______|
           //               |______|
-          result.set(i, TimeRange.fromStartEnd(current.start(), 
-                                               next.end(), false));
+          result.set(i, TimeRange.fromStartEnd(
+              current.start(), Math.max(current.end(), next.end()), false));
           result.remove(next);
           i--;
         }
